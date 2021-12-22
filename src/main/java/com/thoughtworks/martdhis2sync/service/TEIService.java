@@ -158,12 +158,12 @@ public class TEIService {
                 result.addAll(trackedEntityInstances.getBody().getTrackedEntityInstances());
 
             }
-            TEIUtil.setInstancesWithEnrollments(getMap(result, program));
+            TEIUtil.setInstancesWithEnrollments(getInstanceIdToEnrollmentMap(result, program));
             logger.info("Results Size " + result.size());
         }
     }
 
-    private Map<String, List<EnrollmentDetails>> getMap(List<TrackedEntityInstanceInfo> trackedEntityInstances, String currentProgram) {
+    private Map<String, List<EnrollmentDetails>> getInstanceIdToEnrollmentMap(List<TrackedEntityInstanceInfo> trackedEntityInstances, String currentProgram) {
         Map<String, List<EnrollmentDetails>> instancesMap = new HashMap<>();
         trackedEntityInstances.forEach(trackedEntityInstance -> {
             if (!trackedEntityInstance.getEnrollments().isEmpty()) {
