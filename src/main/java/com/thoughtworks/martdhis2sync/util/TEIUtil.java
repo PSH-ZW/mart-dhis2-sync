@@ -44,7 +44,7 @@ public class TEIUtil {
 
     public static void setPatientIds(JsonObject tableRowJsonObject) {
         patientIdTEIUidMap.put(
-                jsonToString(tableRowJsonObject.get("Patient_Identifier")),
+                jsonToString(tableRowJsonObject.get("patient_identifier")),
                 jsonToString(tableRowJsonObject.get("instance_id"))
         );
     }

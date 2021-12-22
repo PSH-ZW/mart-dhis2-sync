@@ -38,9 +38,9 @@ public class TEIService {
             "fields=trackedEntityInstance,enrollments[program,enrollment,enrollmentDate,completedDate,status]&" +
             "program=%s&trackedEntityInstance=%s";
 
-    private final String PATIENTS_WITH_INVALID_ORG_UNIT_QUERY = "select \"Patient_Identifier\",\"OrgUnit\" from %s it " +
-            "where \"OrgUnit\" is null or " +
-            "\"OrgUnit\" not in (select orgunit from  orgunit_tracker ot)";
+    private final String PATIENTS_WITH_INVALID_ORG_UNIT_QUERY = "select \"patient_identifier\",\"org_unit\" from %s it " +
+            "where \"org_unit\" is null or " +
+            "\"org_unit\" not in (select org_unit from  orgunit_tracker ot)";
 
     @Value("${country.org.unit.id.for.patient.data.duplication.check}")
     private String orgUnitID;
@@ -207,8 +207,8 @@ public class TEIService {
         List<Map<String, Object>> rows = jdbcTemplate.queryForList(String.format(PATIENTS_WITH_INVALID_ORG_UNIT_QUERY, instanceTable));
         Map<String,String> invalidPatients = new HashMap<>();
         rows.forEach(row -> {
-            String patientID = (String)row.get("Patient_Identifier");
-            String orgUnit = (String)row.get("OrgUnit");
+            String patientID = (String)row.get("patient_identifier");
+            String orgUnit = (String)row.get("org_unit");
             invalidPatients.put(patientID,orgUnit);
         });
         return invalidPatients;

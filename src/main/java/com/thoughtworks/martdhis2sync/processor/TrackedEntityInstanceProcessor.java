@@ -23,7 +23,7 @@ import static com.thoughtworks.martdhis2sync.util.BatchUtil.*;
 public class TrackedEntityInstanceProcessor implements ItemProcessor {
 
     private static final String EMPTY_STRING = "\"\"";
-    private static final String ORGUNIT_UID = "orgunit_id";
+    private static final String ORGUNIT_UID = "org_unit";
 
     @Value("${tracked.entity.type.person.uid}")
     private String teUID;

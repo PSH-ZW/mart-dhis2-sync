@@ -5,7 +5,7 @@ SELECT
   enrollmentsTable.status               AS enrollment_status,
   enrollmentsTable.program              AS enrolled_program,
   enrollmentsTable.enrollment_date      AS enr_date,
-  enrollmentsTable."Patient_Identifier" AS enrolled_patient_identifier,
+  enrollmentsTable."patient_identifier" AS enrolled_patient_identifier,
   eventsTable.*,
   orgTracker.id                         AS orgunit_id,
   insTracker.instance_id,

@@ -87,7 +87,7 @@ public class PushController {
             teiService.getTrackedEntityInstances(requestBody.getService(), mappingJson);
             teiService.triggerJob(requestBody.getService(), requestBody.getUser(),
                     lookupTable.getInstance(), mappingJson.getInstance(), config.getSearchable(), config.getComparable());
-            triggerEnrollmentsSync(requestBody, lookupTable, mappingJson, config);
+//            triggerEnrollmentsSync(requestBody, lookupTable, mappingJson, config);
 
             if (!IS_DELTA_EXISTS) {
                 loggerService.collateLogMessage(NO_DELTA_DATA);

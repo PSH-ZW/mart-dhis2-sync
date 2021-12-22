@@ -43,7 +43,7 @@ public class JobService {
     @Getter
     private static boolean IS_JOB_FAILED = false;
 
-    public void triggerJob(String programName, String user, String jobName, List<Step> steps, String openLatestCompletedEnrollment)
+    public void     triggerJob(String programName, String user, String jobName, List<Step> steps, String openLatestCompletedEnrollment)
             throws JobParametersInvalidException, JobExecutionAlreadyRunningException,
             JobRestartException, JobInstanceAlreadyCompleteException, SyncFailedException {
         IS_JOB_FAILED = false;

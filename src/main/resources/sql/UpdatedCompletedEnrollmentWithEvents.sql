@@ -5,7 +5,7 @@ SELECT
   enrollmentsTable.status               AS enrollment_status,
   enrollmentsTable.program              AS enrolled_program,
   enrollmentsTable.enrollment_date      AS enr_date,
-  enrollmentsTable."Patient_Identifier" AS enrolled_patient_identifier,
+  enrollmentsTable.patient_identifier AS enrolled_patient_identifier,
   eventsTable.*,
   orgTracker.id                         AS orgunit_id,
   insTracker.instance_id,
@@ -21,15 +21,15 @@ FROM (SELECT enrTable.*
                    enrollments.status            AS event_program_status,
                    enrollments.incident_date     AS event_program_incident_date
                    FROM %s evnTable
-                     INNER JOIN %s enrollments ON evnTable."Patient_Identifier" = enrollments."Patient_Identifier"
+                     INNER JOIN %s enrollments ON evnTable.patient_identifier = enrollments.patient_identifier
                               AND evnTable.enrollment_date = COALESCE(enrollments.enrollment_date, evnTable.enrollment_date)
                      INNER JOIN marker event_marker
                        ON evnTable.date_created :: TIMESTAMP > COALESCE(event_marker.last_synced_date, '-infinity')
                           AND category = 'event' AND program_name = '%s') AS eventsTable
-    ON enrollmentsTable."Patient_Identifier" = eventsTable."Patient_Identifier"
+    ON enrollmentsTable.patient_identifier = eventsTable.patient_identifier
        AND eventsTable.enrollment_date = COALESCE(enrollmentsTable.enrollment_date, eventsTable.enrollment_date)
-  INNER JOIN orgunit_tracker orgTracker ON COALESCE(eventsTable."OrgUnit", enrollmentsTable."OrgUnit") = orgTracker.orgunit
-  INNER JOIN instance_tracker insTracker ON COALESCE(eventsTable."Patient_Identifier", enrollmentsTable."Patient_Identifier") = insTracker.patient_id
+  INNER JOIN orgunit_tracker orgTracker ON COALESCE(eventsTable.org_unit, enrollmentsTable.org_unit) = orgTracker.orgunit
+  INNER JOIN instance_tracker insTracker ON COALESCE(eventsTable.patient_identifier, enrollmentsTable.patient_identifier) = insTracker.patient_id
   LEFT JOIN enrollment_tracker enrolTracker ON COALESCE(enrollmentsTable.program, eventsTable.program) = enrolTracker.program
                                                AND enrolTracker.instance_id = insTracker.instance_id
                                                AND enrolTracker.program_unique_id = COALESCE(enrollmentsTable.program_unique_id, eventsTable.event_program_unique_id) :: TEXT

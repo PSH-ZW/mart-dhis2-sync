@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -33,7 +34,10 @@ public class MarkerUtil {
                 programName, category);
 
         List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
-        Object lastSyncedDate = list.get(0).get("last_synced_date");
+        Object lastSyncedDate = null;
+        if(!CollectionUtils.isEmpty(list)) {
+            lastSyncedDate = list.get(0).get("last_synced_date");
+        }
 
         if(lastSyncedDate == null) {
             return new Date(Long.MIN_VALUE);
