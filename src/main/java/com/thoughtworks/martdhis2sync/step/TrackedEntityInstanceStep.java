@@ -55,4 +55,14 @@ public class TrackedEntityInstanceStep {
 
         return processor;
     }
+
+    //TODO: remove above
+    public Step get(String patientId, Object mappingObj, List<String> searchableAttributes, List<String> comparableAttributes) {
+        return stepFactory.build(
+                TEI_STEP_NAME,
+                mappingReader.getInstanceReader(patientId),
+                getProcessor(mappingObj, searchableAttributes, comparableAttributes),
+                writer
+        );
+    }
 }

@@ -75,7 +75,8 @@ public class TEIService {
     private static final String LOG_PREFIX = "TEI Service: ";
     private static final String TEI_JOB_NAME = "Sync Tracked Entity Instance";
 
-    public void triggerJob(String service, String user, String lookupTable, Object mappingObj, List<String> searchableAttributes, List<String> comparableAttributes)
+    public void triggerJob(String service, String user, String lookupTable,
+                           Object mappingObj, List<String> searchableAttributes, List<String> comparableAttributes)
             throws JobParametersInvalidException, JobExecutionAlreadyRunningException,
             JobRestartException, JobInstanceAlreadyCompleteException, SyncFailedException {
 
@@ -99,7 +100,7 @@ public class TEIService {
         url.append("&ouMode=DESCENDANTS");
 
         Gson gson = new Gson();
-        LinkedTreeMap instanceMapping = gson.fromJson(mappingJson.getInstance().toString(), LinkedTreeMap.class);
+        LinkedTreeMap instanceMapping = gson.fromJson(mappingJson.getFormTableMappings().toString(), LinkedTreeMap.class);
 
         List<Map<String, Object>> searchableFields = mappingDAO.getSearchableFields(mappingName);
 
@@ -212,6 +213,37 @@ public class TEIService {
             invalidPatients.put(patientID,orgUnit);
         });
         return invalidPatients;
+    }
+
+    //TODO: remove everything on top
+
+    public Map<String,String> verifyOrgUnitsForPatients() {
+        final String sql = "select \"patient_identifier\",\"org_unit\" from patient " +
+                "where \"org_unit\" is null or " +
+                "\"org_unit\" not in (select org_unit from  orgunit_tracker ot)";
+        List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
+        Map<String,String> invalidPatients = new HashMap<>();
+        rows.forEach(row -> {
+            String patientID = (String)row.get("patient_identifier");
+            String orgUnit = (String)row.get("org_unit");
+            invalidPatients.put(patientID,orgUnit);
+        });
+        return invalidPatients;
+    }
+
+    public void triggerJob(String patientId, String user, Object mappingObj, List<String> searchableAttributes,
+                           List<String> comparableAttributes)
+            throws JobParametersInvalidException, JobExecutionAlreadyRunningException,
+            JobRestartException, JobInstanceAlreadyCompleteException, SyncFailedException {
+
+        try {
+            LinkedList<Step> steps = new LinkedList<>();
+            steps.add(trackedEntityInstanceStep.get(patientId, mappingObj, searchableAttributes, comparableAttributes));
+            jobService.triggerJob(user, TEI_JOB_NAME, steps, "");
+        } catch (Exception e) {
+            logger.error(LOG_PREFIX + e.getMessage());
+            throw e;
+        }
     }
 }
 

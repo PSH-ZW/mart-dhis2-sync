@@ -77,6 +77,11 @@ public class MappingReader {
         return get(sql);
     }
 
+    public JdbcCursorItemReader<Map<String, Object>> getInstanceReader(String patientId) {
+        String sql = String.format(getSql(instanceResource), patientId);
+        return get(sql);
+    }
+
     public JdbcCursorItemReader<Map<String, Object>> getEventReader(String lookupTable, String programName, String enrollmentLookupTable) {
         String sql = String.format(getSql(eventResource), lookupTable, enrollmentLookupTable, programName);
         return get(sql);

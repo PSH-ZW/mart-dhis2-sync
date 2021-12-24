@@ -33,6 +33,12 @@ public class MappingDAO {
         return jdbcTemplate.queryForMap(sql);
     }
 
+    public Map<String, Object> getMapping(Integer programId) {
+        String sql = String.format("SELECT mapping_json, config FROM mapping WHERE program_id='%s'", programId);
+
+        return jdbcTemplate.queryForMap(sql);
+    }
+
     public List<Map<String, Object>> getSearchableFields(String mappingName) throws IOException {
         StringBuilder columns = new StringBuilder();
         Gson gson = new Gson();

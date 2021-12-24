@@ -75,10 +75,10 @@ public class PushController {
         EventUtil.date = markerUtil.getLastSyncedDate(requestBody.getService(), CATEGORY_EVENT);
 
         try {
-            Map<String,String> invalidPatients = teiService.verifyOrgUnitsForPatients(lookupTable.getInstance());
-            if(invalidPatients.size() > 0) {
+            Map<String, String> invalidPatients = teiService.verifyOrgUnitsForPatients(lookupTable.getInstance());
+            if (invalidPatients.size() > 0) {
                 loggerService.collateLogMessage("Prevalidation for sync service failed. Invalid Org Unit specified for below patients. Update Patient Info in OpenMRS, run Bahmni MART");
-                invalidPatients.forEach((patientID,orgUnit)-> {
+                invalidPatients.forEach((patientID, orgUnit) -> {
                     loggerService.collateLogMessage("[Patient ID (" + patientID + ") Org Unit ID (" + orgUnit + ")] ");
                 });
                 loggerService.updateLog(requestBody.getService(), FAILED);
@@ -86,8 +86,8 @@ public class PushController {
             }
             teiService.getTrackedEntityInstances(requestBody.getService(), mappingJson);
             teiService.triggerJob(requestBody.getService(), requestBody.getUser(),
-                    lookupTable.getInstance(), mappingJson.getInstance(), config.getSearchable(), config.getComparable());
-//            triggerEnrollmentsSync(requestBody, lookupTable, mappingJson, config);
+                    lookupTable.getInstance(), mappingJson.getFormTableMappings(), config.getSearchable(), config.getComparable());
+            triggerEnrollmentsSync(requestBody, lookupTable, mappingJson, config);
 
             if (!IS_DELTA_EXISTS) {
                 loggerService.collateLogMessage(NO_DELTA_DATA);
@@ -105,7 +105,7 @@ public class PushController {
 //            throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "SYNC FAILED");
             e.printStackTrace();
         }
-        logger.info("Push Controller completed and took: " + (System.currentTimeMillis() - timeInMillis)/1000 + " seconds");
+        logger.info("Push Controller completed and took: " + (System.currentTimeMillis() - timeInMillis) / 1000 + " seconds");
     }
 
     private void updateMarkers(DHISSyncRequestBody requestBody) {
@@ -127,7 +127,7 @@ public class PushController {
                 "=========================New Completed Enrollment Sync Started=========================\n");
 
         completedEnrollmentService.triggerJobForNewCompletedEnrollments(requestBody.getService(), requestBody.getUser(),
-                lookupTable.getEnrollments(), lookupTable.getEvent(), mappingJson.getEvent(), config.getOpenLatestCompletedEnrollment());
+                lookupTable.getEnrollments(), lookupTable.getEvent(), mappingJson.getFormTableMappings(), config.getOpenLatestCompletedEnrollment());
 
         enrollmentsToIgnore = new ArrayList<>(EnrollmentUtil.enrollmentsToSaveInTracker);
         TrackersHandler.clearTrackerLists();
@@ -136,7 +136,7 @@ public class PushController {
                 "=========================Update Complete Enrollment Sync Started=========================\n");
 
         completedEnrollmentService.triggerJobForUpdatedCompletedEnrollments(requestBody.getService(), requestBody.getUser(),
-                lookupTable.getEnrollments(), lookupTable.getEvent(), mappingJson.getEvent(), enrollmentsToIgnore,
+                lookupTable.getEnrollments(), lookupTable.getEvent(), mappingJson.getFormTableMappings(), enrollmentsToIgnore,
                 config.getOpenLatestCompletedEnrollment());
 
         TrackersHandler.clearTrackerLists();
@@ -145,7 +145,7 @@ public class PushController {
                 "=========================New Active Enrollment Sync Started=========================\n");
 
         activeEnrollmentService.triggerJobForNewActiveEnrollments(requestBody.getService(), requestBody.getUser(),
-                lookupTable.getEnrollments(), lookupTable.getEvent(), mappingJson.getEvent(), config.getOpenLatestCompletedEnrollment());
+                lookupTable.getEnrollments(), lookupTable.getEvent(), mappingJson.getFormTableMappings(), config.getOpenLatestCompletedEnrollment());
 
         enrollmentsToIgnore = new ArrayList<>(EnrollmentUtil.enrollmentsToSaveInTracker);
         TrackersHandler.clearTrackerLists();
@@ -153,9 +153,43 @@ public class PushController {
 
         logger.info("=========================New Active Enrollment Sync Success=========================\n\n" +
                 "=========================Update Active Enrollment Sync Started");
-        
+
         activeEnrollmentService.triggerJobForUpdatedActiveEnrollments(requestBody.getService(), requestBody.getUser(),
-                lookupTable.getEnrollments(), lookupTable.getEvent(), mappingJson.getEvent(), enrollmentsToIgnore,
+                lookupTable.getEnrollments(), lookupTable.getEvent(), mappingJson.getFormTableMappings(), enrollmentsToIgnore,
                 config.getOpenLatestCompletedEnrollment());
+    }
+
+    @PutMapping(value = "/test")
+    public void sync(@RequestBody DhisSyncEvent syncEvent) {
+        //TODO: log proper program name
+        loggerService.addLog(syncEvent.getProgramId(), syncEvent.getUser(), syncEvent.getComment());
+        Map<String, Object> mapping = mappingService.getMapping(syncEvent.getProgramId());
+
+        Gson gson = new Gson();
+        MappingJson mappingJson = gson.fromJson(mapping.get("mapping_json").toString(), MappingJson.class);
+        Config config = gson.fromJson(mapping.get("config").toString(), Config.class);
+
+        try {
+            Map<String, String> invalidPatients = teiService.verifyOrgUnitsForPatients();
+            if (invalidPatients.size() > 0) {
+                loggerService.collateLogMessage("Pre validation for sync service failed." +
+                        " Invalid Org Unit specified for below patients. Update Patient Info in OpenMRS");
+                invalidPatients.forEach((patientID, orgUnit) -> {
+                    loggerService.collateLogMessage("[Patient ID (" + patientID + ") Org Unit ID (" + orgUnit + ")] ");
+                });
+                loggerService.updateLog(syncEvent.getProgramId(), FAILED);
+                throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Prevalidation for sync service failed." +
+                        " Invalid Org Unit specified for below patients. Update Patient Info in OpenMRS, run Bahmni MART");
+            }
+            teiService.triggerJob(syncEvent.getPatientId(), syncEvent.getUser(),
+                    mappingJson.getFormTableMappings(), config.getSearchable(), config.getComparable());
+            loggerService.updateLog(syncEvent.getProgramId(), SUCCESS);
+        } catch (HttpServerErrorException e) {
+            loggerService.updateLog(syncEvent.getProgramId(), FAILED);
+            throw e;
+        } catch (Exception e) {
+            loggerService.updateLog(syncEvent.getProgramId(), FAILED);
+            e.printStackTrace();
+        }
     }
 }

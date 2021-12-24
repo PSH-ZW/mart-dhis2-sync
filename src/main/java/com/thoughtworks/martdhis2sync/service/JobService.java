@@ -43,7 +43,7 @@ public class JobService {
     @Getter
     private static boolean IS_JOB_FAILED = false;
 
-    public void     triggerJob(String programName, String user, String jobName, List<Step> steps, String openLatestCompletedEnrollment)
+    public void triggerJob(String programName, String user, String jobName, List<Step> steps, String openLatestCompletedEnrollment)
             throws JobParametersInvalidException, JobExecutionAlreadyRunningException,
             JobRestartException, JobInstanceAlreadyCompleteException, SyncFailedException {
         IS_JOB_FAILED = false;
@@ -79,5 +79,30 @@ public class JobService {
                 .incrementer(new RunIdIncrementer())
                 .listener(listener)
                 .flow(step);
+    }
+
+    //TODO: remove above
+
+    public void triggerJob(String user, String jobName, List<Step> steps, String openLatestCompletedEnrollment)
+            throws JobParametersInvalidException, JobExecutionAlreadyRunningException,
+            JobRestartException, JobInstanceAlreadyCompleteException, SyncFailedException {
+        IS_JOB_FAILED = false;
+        JobExecution jobExecution = jobLauncher.run(getJob(jobName, steps),
+                new JobParametersBuilder()
+                        .addDate("date", new Date())
+                        .addString("user", user)
+                        .addString("openLatestCompletedEnrollment", openLatestCompletedEnrollment)
+                        .toJobParameters());
+
+        if (jobExecution.getStatus() == BatchStatus.FAILED || IS_JOB_FAILED) {
+            jobExecution.getAllFailureExceptions().forEach(exp -> {
+                String message = exp.getMessage();
+                if(message != null) {
+                    loggerService.collateLogMessage(message);
+                }
+            });
+
+            throw new SyncFailedException(jobName.toUpperCase() + " FAILED");
+        }
     }
 }
