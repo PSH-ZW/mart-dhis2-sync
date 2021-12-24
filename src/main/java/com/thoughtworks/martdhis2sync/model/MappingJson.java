@@ -6,6 +6,6 @@ import java.util.Map;
 
 @Data
 public class MappingJson {
-    //{form_table_name : {column_name : UID in DHIS2}}
-    private Map<String, String> formTableMappings;
+    //{form_table_name : {column_name : elementId in DHIS2}}
+    private Map<String, Map<String, String>> formTableMappings;
 }

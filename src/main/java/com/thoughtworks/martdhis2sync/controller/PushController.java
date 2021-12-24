@@ -51,6 +51,9 @@ public class PushController {
     @Autowired
     private MarkerUtil markerUtil;
 
+    @Autowired
+    private ProgramDataSyncService programDataSyncService;
+
     private List<EnrollmentAPIPayLoad> enrollmentsToIgnore = new ArrayList<>();
 
     public static boolean IS_DELTA_EXISTS = false;
@@ -183,6 +186,7 @@ public class PushController {
             }
             teiService.triggerJob(syncEvent.getPatientId(), syncEvent.getUser(),
                     mappingJson.getFormTableMappings(), config.getSearchable(), config.getComparable());
+            programDataSyncService.syncProgramDetails(syncEvent, mappingJson);
             loggerService.updateLog(syncEvent.getProgramId(), SUCCESS);
         } catch (HttpServerErrorException e) {
             loggerService.updateLog(syncEvent.getProgramId(), FAILED);

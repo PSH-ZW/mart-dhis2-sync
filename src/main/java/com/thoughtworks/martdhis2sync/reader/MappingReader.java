@@ -1,8 +1,8 @@
 package com.thoughtworks.martdhis2sync.reader;
 
 import com.thoughtworks.martdhis2sync.model.EnrollmentAPIPayLoad;
+import com.thoughtworks.martdhis2sync.model.MappingJson;
 import com.thoughtworks.martdhis2sync.util.BatchUtil;
-import com.thoughtworks.martdhis2sync.util.EnrollmentUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
@@ -37,6 +37,7 @@ public class MappingReader {
     @Value("classpath:sql/NewCompletedEnrollmentWithEvents.sql")
     private Resource newCompletedEnrWithEventsResource;
 
+
     @Value("classpath:sql/UpdatedCompletedEnrollmentWithEvents.sql")
     private Resource updatedCompletedEnrWithEventsResource;
 
@@ -45,6 +46,9 @@ public class MappingReader {
 
     @Value("classpath:sql/UpdatedActiveEnrollmentWithEvents.sql")
     private Resource updatedActiveEnrWithEventsResource;
+
+    @Value("classpath:sql/EnrollmentWithEvents.sql")
+    private Resource enrollmentWithEvents;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -91,6 +95,15 @@ public class MappingReader {
             String enrollmentLookupTable, String programName, String eventLookupTable) {
         String sql = String.format(getSql(newCompletedEnrWithEventsResource), enrollmentLookupTable,
                                             eventLookupTable, programName);
+        return get(sql);
+    }
+
+    public JdbcCursorItemReader<Map<String, Object>> getEnrollmentAndEventReader(String encounterId, MappingJson mappingJson) {
+        StringBuilder leftJoins = new StringBuilder();
+        for(String tableName : mappingJson.getFormTableMappings().keySet()) {
+            leftJoins.append(String.format("LEFT JOIN %s ON e.encounter_id = %s.encounter_id ", tableName, tableName));
+        }
+        String sql = String.format(getSql(enrollmentWithEvents), leftJoins, encounterId);
         return get(sql);
     }
 
