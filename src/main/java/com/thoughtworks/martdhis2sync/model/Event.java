@@ -9,6 +9,7 @@ import java.util.Map;
 @AllArgsConstructor
 public class Event {
     public static final String STATUS_COMPLETED = "COMPLETED";
+    public static final String ACTIVE = "ACTIVE";
 
     private String event;
     private String trackedEntityInstance;

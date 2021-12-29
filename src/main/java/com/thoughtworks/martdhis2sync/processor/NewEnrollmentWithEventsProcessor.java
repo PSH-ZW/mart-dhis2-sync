@@ -1,24 +1,31 @@
 package com.thoughtworks.martdhis2sync.processor;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.thoughtworks.martdhis2sync.dao.PatientDAO;
 import com.thoughtworks.martdhis2sync.model.EnrollmentAPIPayLoad;
 import com.thoughtworks.martdhis2sync.model.Event;
 import com.thoughtworks.martdhis2sync.model.ProcessedTableRow;
 import lombok.Setter;
 import org.springframework.batch.item.ItemProcessor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-import static com.thoughtworks.martdhis2sync.util.BatchUtil.DATEFORMAT_WITHOUT_TIME;
-import static com.thoughtworks.martdhis2sync.util.BatchUtil.DATEFORMAT_WITH_24HR_TIME;
-import static com.thoughtworks.martdhis2sync.util.BatchUtil.getFormattedDateString;
-import static com.thoughtworks.martdhis2sync.util.BatchUtil.hasValue;
 import static com.thoughtworks.martdhis2sync.util.EventUtil.getDataValues;
 
 @Component
 public class NewEnrollmentWithEventsProcessor extends EnrollmentWithEventProcessor implements ItemProcessor{
+
+    @Value("${dhis2.program-id}")
+    private String programId;
+
+    @Value("${country.org.unit.id.for.patient.data.duplication.check}")
+    private String orgUnitId;
+
+    @Autowired
+    protected PatientDAO patientDAO;
 
     @Setter
     private Object mappingObj;
@@ -31,38 +38,28 @@ public class NewEnrollmentWithEventsProcessor extends EnrollmentWithEventProcess
     EnrollmentAPIPayLoad getEnrollmentAPIPayLoad(JsonObject tableRowJsonObject, List<Event> events) {
         return new EnrollmentAPIPayLoad(
                "",
-               tableRowJsonObject.get("instance_id").getAsString(),
-               tableRowJsonObject.get("enrolled_program").getAsString(),
-               tableRowJsonObject.get("orgunit_id").getAsString(),
-               getFormattedDateString(tableRowJsonObject.get("enr_date").getAsString(),
-                       DATEFORMAT_WITH_24HR_TIME, DATEFORMAT_WITHOUT_TIME),
-               getFormattedDateString(tableRowJsonObject.get("incident_date").getAsString(),
-                       DATEFORMAT_WITH_24HR_TIME, DATEFORMAT_WITHOUT_TIME),
-               tableRowJsonObject.get("enrollment_status").getAsString(),
-               tableRowJsonObject.get("program_unique_id").getAsString(),
+               patientDAO.getInstanceIdForPatient(tableRowJsonObject.get("patient_id").getAsString()),
+               programId,
+               orgUnitId,
+               "2021-09-28T09:45:20.373",
+               "2021-09-28T09:45:20.373",
+               "ACTIVE",
+               "",
                events
         );
     }
 
     Event getEvent(JsonObject tableRow, JsonObject mapping) {
-        if (!hasValue(tableRow.get("event_unique_id"))) {
-            return null;
-        }
-
-        String eventDate = tableRow.get("event_date").getAsString();
-        JsonElement eventStatus = tableRow.get("status");
-        String dateString = getFormattedDateString(eventDate, DATEFORMAT_WITH_24HR_TIME, DATEFORMAT_WITHOUT_TIME);
-
         return new Event(
                 "",
-                tableRow.get("instance_id").getAsString(),
+                patientDAO.getInstanceIdForPatient(tableRow.get("patient_id").getAsString()),
                 "",
-                tableRow.get("program").getAsString(),
-                tableRow.get("program_stage").getAsString(),
-                tableRow.get("orgunit_id").getAsString(),
-                dateString,
-                hasValue(eventStatus) ? eventStatus.getAsString() : Event.STATUS_COMPLETED,
-                tableRow.get("event_unique_id").getAsString(),
+                programId,
+                "YoxZS1bsBaW",
+                orgUnitId,
+                "2021-10-29T09:22:03.510",
+                Event.ACTIVE,
+                "TestId",
                 getDataValues(tableRow, mapping)
         );
     }

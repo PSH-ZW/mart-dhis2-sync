@@ -51,6 +51,9 @@ public class TEIService {
     @Autowired
     private MappingDAO mappingDAO;
 
+    @Autowired
+    private MappingService mappingService;
+
     private static final String TEI_URI = "/api/trackedEntityInstances?pageSize=10000";
 
     @Autowired
@@ -231,14 +234,19 @@ public class TEIService {
         return invalidPatients;
     }
 
-    public void triggerJob(String patientId, String user, Object mappingObj, List<String> searchableAttributes,
+    public void triggerJob(String patientId, String user, List<String> searchableAttributes,
                            List<String> comparableAttributes)
             throws JobParametersInvalidException, JobExecutionAlreadyRunningException,
             JobRestartException, JobInstanceAlreadyCompleteException, SyncFailedException {
 
         try {
             LinkedList<Step> steps = new LinkedList<>();
-            steps.add(trackedEntityInstanceStep.get(patientId, mappingObj, searchableAttributes, comparableAttributes));
+            //TODO: get this from cache if already present
+            Map<String, Object> mapping = mappingService.getMapping("Patient");
+            Gson gson = new Gson();
+            MappingJson mappingJson = gson.fromJson(mapping.get("mapping_json").toString(), MappingJson.class);
+            //TODO: fix this abomination
+            steps.add(trackedEntityInstanceStep.get(patientId, mappingJson.getFormTableMappings().get("patient"), searchableAttributes, comparableAttributes));
             jobService.triggerJob(user, TEI_JOB_NAME, steps, "");
         } catch (Exception e) {
             logger.error(LOG_PREFIX + e.getMessage());

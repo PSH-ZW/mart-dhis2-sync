@@ -11,6 +11,8 @@ public class ProgramDataWriter implements ItemWriter {
 
     @Override
     public void write(List items) throws Exception {
+        System.out.println("=============================================");
         System.out.println(items);
+        System.out.println("=============================================");
     }
 }

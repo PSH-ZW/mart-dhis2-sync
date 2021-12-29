@@ -185,7 +185,7 @@ public class PushController {
                         " Invalid Org Unit specified for below patients. Update Patient Info in OpenMRS, run Bahmni MART");
             }
             teiService.triggerJob(syncEvent.getPatientId(), syncEvent.getUser(),
-                    mappingJson.getFormTableMappings(), config.getSearchable(), config.getComparable());
+                    config.getSearchable(), config.getComparable());
             programDataSyncService.syncProgramDetails(syncEvent, mappingJson);
             loggerService.updateLog(syncEvent.getProgramId(), SUCCESS);
         } catch (HttpServerErrorException e) {

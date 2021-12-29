@@ -82,7 +82,6 @@ public class JobService {
     }
 
     //TODO: remove above
-
     public void triggerJob(String user, String jobName, List<Step> steps, String openLatestCompletedEnrollment)
             throws JobParametersInvalidException, JobExecutionAlreadyRunningException,
             JobRestartException, JobInstanceAlreadyCompleteException, SyncFailedException {
