@@ -162,6 +162,7 @@ public class PushController {
                 config.getOpenLatestCompletedEnrollment());
     }
 
+    //TODO: remove this once scheduler is done.
     @PutMapping(value = "/test")
     public void sync(@RequestBody DhisSyncEvent syncEvent) {
         //TODO: log proper program name
