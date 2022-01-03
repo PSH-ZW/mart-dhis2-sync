@@ -28,7 +28,7 @@ public class MappingDAO {
     private Resource searchableResource;
 
     public Map<String, Object> getMapping(String mapping) {
-        String sql = String.format("SELECT lookup_table, mapping_json, config FROM mapping WHERE mapping_name='%s'", mapping);
+        String sql = String.format("SELECT lookup_table, mapping_json, config FROM mapping WHERE program_name ='%s'", mapping);
 
         return jdbcTemplate.queryForMap(sql);
     }
@@ -39,10 +39,10 @@ public class MappingDAO {
         return jdbcTemplate.queryForMap(sql);
     }
 
-    public List<Map<String, Object>> getSearchableFields(String mappingName) throws IOException {
+    public List<Map<String, Object>> getSearchableFields(String programName) throws IOException {
         StringBuilder columns = new StringBuilder();
         Gson gson = new Gson();
-        Map<String, Object> mapping = getMapping(mappingName);
+        Map<String, Object> mapping = getMapping(programName);
 
         gson.fromJson(mapping.get("config").toString(), Config.class).getSearchable().forEach(column -> {
             columns.append("\"");
@@ -60,7 +60,7 @@ public class MappingDAO {
                         BatchUtil.convertResourceOutputToString(searchableResource),
                         columns.substring(0, columns.length() - 1),
                         gson.fromJson(mapping.get("lookup_table").toString(), LookupTable.class).getInstance(),
-                        mappingName
+                        programName
                 )
         );
     }

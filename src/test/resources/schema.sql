@@ -1,6 +1,6 @@
 DROP TABLE IF EXISTS mapping CASCADE;
 CREATE TABLE "public"."mapping"(
-  mapping_name text,
+  program_name  text,
   lookup_table json,
   mapping_json json,
   created_by text,

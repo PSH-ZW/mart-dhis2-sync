@@ -39,7 +39,7 @@ public class MappingDAOTest {
     private MappingDAO mappingDAO;
     private Map<String, Object> expectedMapping;
     private String getMappingSql;
-    private String mappingName;
+    private String programName;
 
     @Before
     public void setUp() throws Exception {
@@ -47,8 +47,8 @@ public class MappingDAOTest {
         setValuesForMemberFields(mappingDAO, "jdbcTemplate", jdbcTemplate);
         setValuesForMemberFields(mappingDAO, "searchableResource", searchableResource);
 
-        mappingName = "Patient Identifier Details";
-        getMappingSql = "SELECT lookup_table, mapping_json, config FROM mapping WHERE mapping_name='" + mappingName + "'";
+        programName = "Patient Identifier Details";
+        getMappingSql = "SELECT lookup_table, mapping_json, config FROM mapping WHERE program_name ='" + programName + "'";
         expectedMapping = new HashMap<>();
         expectedMapping.put("lookup_table", "{\"instance\": \"patient_identifier\", \"enrollments\": \"patient_enrollments\"}");
         expectedMapping.put("config", "{\"searchable\": [\"patient_id\"]}");
@@ -65,7 +65,7 @@ public class MappingDAOTest {
 
         when(jdbcTemplate.queryForMap(getMappingSql)).thenReturn(expectedMapping);
 
-        Map<String, Object> actual = mappingDAO.getMapping(mappingName);
+        Map<String, Object> actual = mappingDAO.getMapping(programName);
 
         assertEquals(expectedMapping, actual);
         verify(jdbcTemplate, times(1)).queryForMap(getMappingSql);
@@ -97,7 +97,7 @@ public class MappingDAOTest {
         when(jdbcTemplate.queryForMap(getMappingSql)).thenReturn(expectedMapping);
         when(jdbcTemplate.queryForList(actualSql)).thenReturn(expected);
 
-        actual = mappingDAO.getSearchableFields(mappingName);
+        actual = mappingDAO.getSearchableFields(programName);
 
         assertEquals(expected, actual);
     }
@@ -123,7 +123,7 @@ public class MappingDAOTest {
         when(jdbcTemplate.queryForMap(getMappingSql)).thenReturn(expectedMapping);
         when(jdbcTemplate.queryForList(actualSql)).thenReturn(expected);
 
-        actual = mappingDAO.getSearchableFields(mappingName);
+        actual = mappingDAO.getSearchableFields(programName);
 
         assertEquals(expected, actual);
     }
@@ -142,7 +142,7 @@ public class MappingDAOTest {
         when(BatchUtil.convertResourceOutputToString(searchableResource)).thenReturn(sql);
         when(jdbcTemplate.queryForMap(getMappingSql)).thenReturn(expectedMapping);
 
-        actual = mappingDAO.getSearchableFields(mappingName);
+        actual = mappingDAO.getSearchableFields(programName);
 
         verifyStatic(times(0));
         BatchUtil.convertResourceOutputToString(searchableResource);

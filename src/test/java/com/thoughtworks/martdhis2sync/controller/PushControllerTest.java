@@ -304,7 +304,7 @@ public class PushControllerTest {
                 "}";
 
         Map<String, Object> mapping = new HashMap<>();
-        mapping.put("mapping_name", service);
+        mapping.put("program_name", service);
         mapping.put("lookup_table", lookupTable);
         mapping.put("mapping_json", mappingJson);
         mapping.put("config", config);

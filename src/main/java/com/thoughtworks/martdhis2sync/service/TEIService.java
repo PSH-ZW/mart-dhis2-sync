@@ -93,7 +93,7 @@ public class TEIService {
         }
     }
 
-    public void getTrackedEntityInstances(String mappingName, MappingJson mappingJson) throws IOException {
+    public void getTrackedEntityInstances(String programName, MappingJson mappingJson) throws IOException {
         List<TrackedEntityInstanceInfo> allTEIInfos = new ArrayList<>();
         StringBuilder url = new StringBuilder();
 
@@ -105,7 +105,7 @@ public class TEIService {
         Gson gson = new Gson();
         LinkedTreeMap instanceMapping = gson.fromJson(mappingJson.getFormTableMappings().toString(), LinkedTreeMap.class);
 
-        List<Map<String, Object>> searchableFields = mappingDAO.getSearchableFields(mappingName);
+        List<Map<String, Object>> searchableFields = mappingDAO.getSearchableFields(programName);
 
         if (searchableFields.isEmpty()) {
             TEIUtil.setTrackedEntityInstanceInfos(Collections.emptyList());
