@@ -245,8 +245,8 @@ public class TEIService {
             Map<String, Object> mapping = mappingService.getMapping("Patient");
             Gson gson = new Gson();
             MappingJson mappingJson = gson.fromJson(mapping.get("mapping_json").toString(), MappingJson.class);
-            //TODO: fix this abomination
-            steps.add(trackedEntityInstanceStep.get(patientId, mappingJson.getFormTableMappings().get("patient"), searchableAttributes, comparableAttributes));
+            Map<String, String> patientMapping = mappingJson.getFormTableMappings().get("patient");
+            steps.add(trackedEntityInstanceStep.get(patientId, patientMapping, searchableAttributes, comparableAttributes));
             jobService.triggerJob(user, TEI_JOB_NAME, steps, "");
         } catch (Exception e) {
             logger.error(LOG_PREFIX + e.getMessage());
