@@ -1,11 +1,20 @@
 package com.thoughtworks.martdhis2sync.model;
 
 public class DhisSyncEvent {
+    private Integer id;
     private String programId;
     private String patientId;
     private String encounterId;
     private String user;
     private String comment;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getProgramId() {
         return programId;

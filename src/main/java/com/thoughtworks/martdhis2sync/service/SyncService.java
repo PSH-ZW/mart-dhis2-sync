@@ -59,6 +59,7 @@ public class SyncService {
                         config.getSearchable(), config.getComparable());
                 programDataSyncService.syncProgramDetails(syncEvent, mappingJson);
                 loggerService.updateLog(syncEvent.getProgramId(), SUCCESS);
+                eventDAO.markEventAsSynced(syncEvent.getId());
             } catch (HttpServerErrorException e) {
                 loggerService.updateLog(syncEvent.getProgramId(), FAILED);
                 throw e;
