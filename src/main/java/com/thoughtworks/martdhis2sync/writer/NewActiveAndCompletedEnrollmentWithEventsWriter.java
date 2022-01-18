@@ -88,7 +88,7 @@ public class NewActiveAndCompletedEnrollmentWithEventsWriter implements ItemWrit
         processResponseEntity(enrollmentResponse, payLoads);
     }
 
-    private void processResponseEntity(ResponseEntity<DHISEnrollmentSyncResponse> responseEntity, Collection<EnrollmentAPIPayLoad> payLoads) throws Exception {
+    private void processResponseEntity(ResponseEntity<DHISEnrollmentSyncResponse> responseEntity, Collection<EnrollmentAPIPayLoad> payLoads) {
         Iterator<EnrollmentAPIPayLoad> iterator = payLoads.iterator();
         List<EnrollmentImportSummary> enrollmentImportSummaries = responseEntity.getBody().getResponse().getImportSummaries();
         if (HttpStatus.OK.equals(responseEntity.getStatusCode())) {
