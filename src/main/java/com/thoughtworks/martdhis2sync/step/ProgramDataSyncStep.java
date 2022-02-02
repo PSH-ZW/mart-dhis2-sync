@@ -3,6 +3,7 @@ package com.thoughtworks.martdhis2sync.step;
 import com.thoughtworks.martdhis2sync.model.MappingJson;
 import com.thoughtworks.martdhis2sync.processor.NewEnrollmentWithEventsProcessor;
 import com.thoughtworks.martdhis2sync.reader.MappingReader;
+import com.thoughtworks.martdhis2sync.util.Constants;
 import com.thoughtworks.martdhis2sync.writer.NewActiveAndCompletedEnrollmentWithEventsWriter;
 import org.springframework.batch.core.Step;
 import org.springframework.beans.factory.ObjectFactory;
@@ -39,12 +40,13 @@ public class ProgramDataSyncStep {
 
     private NewEnrollmentWithEventsProcessor getProcessor(MappingJson mappingObj) {
         NewEnrollmentWithEventsProcessor processor = processorObjectFactory.getObject();
-        Map<String, String> allColumnMappings = new HashMap<>();
+        Map<String, String> columnMappingsWithProgramStageId = new HashMap<>();
         Map<String, Map<String, String>> formTableMappings = mappingObj.getFormTableMappings();
         for(String table : formTableMappings.keySet()) {
-            allColumnMappings.putAll(formTableMappings.get(table));
+            columnMappingsWithProgramStageId.putAll(formTableMappings.get(table));
         }
-        processor.setMappingObj(allColumnMappings);
+        columnMappingsWithProgramStageId.put(Constants.DHIS_PROGRAM_STAGE_ID, mappingObj.getDhisProgramStageId());
+        processor.setMappingObj(columnMappingsWithProgramStageId);
 
         return processor;
     }

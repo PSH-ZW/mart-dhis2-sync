@@ -5,6 +5,7 @@ import com.thoughtworks.martdhis2sync.dao.PatientDAO;
 import com.thoughtworks.martdhis2sync.model.EnrollmentAPIPayLoad;
 import com.thoughtworks.martdhis2sync.model.Event;
 import com.thoughtworks.martdhis2sync.model.ProcessedTableRow;
+import com.thoughtworks.martdhis2sync.util.Constants;
 import lombok.Setter;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +56,7 @@ public class NewEnrollmentWithEventsProcessor extends EnrollmentWithEventProcess
                 patientDAO.getInstanceIdForPatient(tableRow.get("patient_id").getAsString()),
                 "",
                 programId,
-                "YoxZS1bsBaW",
+                mapping.get(Constants.DHIS_PROGRAM_STAGE_ID).getAsString(),
                 orgUnitId,
                 "2021-10-29T09:22:03.510",
                 Event.ACTIVE,
