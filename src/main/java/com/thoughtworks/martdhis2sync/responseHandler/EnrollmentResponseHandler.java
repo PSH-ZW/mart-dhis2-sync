@@ -29,6 +29,14 @@ public class EnrollmentResponseHandler {
         });
     }
 
+    public void updateProgramEnrollmentUid(List<EnrollmentImportSummary> importSummaries, Iterator<EnrollmentAPIPayLoad> payLoadIterator) {
+        importSummaries.forEach(importSummary -> {
+            EnrollmentAPIPayLoad enrollment = payLoadIterator.next();
+            enrollment.setEnrollmentId(importSummary.getReference());
+            enrollmentsToSaveInTracker.add(enrollment);
+        });
+    }
+
     public void processErrorResponse(List<EnrollmentImportSummary> importSummaries, Iterator<EnrollmentAPIPayLoad> payLoadIterator, Logger logger, String logPrefix) {
         for (EnrollmentImportSummary importSummary : importSummaries) {
             if (isIgnored(importSummary)) {

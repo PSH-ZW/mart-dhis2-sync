@@ -51,7 +51,7 @@ public class TrackedEntityInstanceProcessor implements ItemProcessor {
         JsonObject mappingJsonObject = mappingObjJsonElement.getAsJsonObject();
 
         //TODO: check what this method is doing exactly and uncomment if needed.
-//        getInstanceId(tableRowJsonObject, mappingJsonObject);
+        getInstanceId(tableRowJsonObject, mappingJsonObject);
         TEIUtil.setPatientIds(tableRowJsonObject);
         updateLatestDateCreated(tableRowJsonObject.get("date_created").toString());
 
