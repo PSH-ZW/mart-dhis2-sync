@@ -1,6 +1,7 @@
 package com.thoughtworks.martdhis2sync.processor;
 
 import com.google.gson.JsonObject;
+import com.thoughtworks.martdhis2sync.dao.EnrollmentDAO;
 import com.thoughtworks.martdhis2sync.dao.PatientDAO;
 import com.thoughtworks.martdhis2sync.model.EnrollmentAPIPayLoad;
 import com.thoughtworks.martdhis2sync.model.Event;
@@ -28,6 +29,9 @@ public class NewEnrollmentWithEventsProcessor extends EnrollmentWithEventProcess
     @Autowired
     protected PatientDAO patientDAO;
 
+    @Autowired
+    protected EnrollmentDAO enrollmentDAO;
+
     @Setter
     private Object mappingObj;
 
@@ -37,9 +41,10 @@ public class NewEnrollmentWithEventsProcessor extends EnrollmentWithEventProcess
     }
 
     EnrollmentAPIPayLoad getEnrollmentAPIPayLoad(JsonObject tableRowJsonObject, List<Event> events) {
+        String instanceId = patientDAO.getInstanceIdForPatient(tableRowJsonObject.get("patient_id").getAsString());
         return new EnrollmentAPIPayLoad(
-               "",
-               patientDAO.getInstanceIdForPatient(tableRowJsonObject.get("patient_id").getAsString()),
+               enrollmentDAO.getEnrollmentIdForInstanceId(instanceId),
+                instanceId,
                programId,
                orgUnitId,
                "2021-09-28T09:45:20.373",
@@ -51,10 +56,11 @@ public class NewEnrollmentWithEventsProcessor extends EnrollmentWithEventProcess
     }
 
     Event getEvent(JsonObject tableRow, JsonObject mapping) {
+        String instanceId = patientDAO.getInstanceIdForPatient(tableRow.get("patient_id").getAsString());
         return new Event(
                 "",
-                patientDAO.getInstanceIdForPatient(tableRow.get("patient_id").getAsString()),
-                "",
+                instanceId,
+                enrollmentDAO.getEnrollmentIdForInstanceId(instanceId),
                 programId,
                 mapping.get(Constants.DHIS_PROGRAM_STAGE_ID).getAsString(),
                 orgUnitId,

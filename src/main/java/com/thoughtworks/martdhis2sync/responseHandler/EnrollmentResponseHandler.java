@@ -3,6 +3,7 @@ package com.thoughtworks.martdhis2sync.responseHandler;
 import com.thoughtworks.martdhis2sync.model.EnrollmentAPIPayLoad;
 import com.thoughtworks.martdhis2sync.model.EnrollmentImportSummary;
 import com.thoughtworks.martdhis2sync.service.LoggerService;
+import com.thoughtworks.martdhis2sync.trackerHandler.TrackersHandler;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -21,19 +22,15 @@ public class EnrollmentResponseHandler {
     @Autowired
     private LoggerService loggerService;
 
+    @Autowired
+    private TrackersHandler trackersHandler;
+
     public void processImportSummaries(List<EnrollmentImportSummary> importSummaries, Iterator<EnrollmentAPIPayLoad> payLoadIterator) {
         importSummaries.forEach(importSummary -> {
             EnrollmentAPIPayLoad enrollment = payLoadIterator.next();
             enrollment.setEnrollmentId(importSummary.getReference());
             enrollmentsToSaveInTracker.add(enrollment);
-        });
-    }
-
-    public void updateProgramEnrollmentUid(List<EnrollmentImportSummary> importSummaries, Iterator<EnrollmentAPIPayLoad> payLoadIterator) {
-        importSummaries.forEach(importSummary -> {
-            EnrollmentAPIPayLoad enrollment = payLoadIterator.next();
-            enrollment.setEnrollmentId(importSummary.getReference());
-            enrollmentsToSaveInTracker.add(enrollment);
+            trackersHandler.addEnrollmentForPatient(enrollment);
         });
     }
 

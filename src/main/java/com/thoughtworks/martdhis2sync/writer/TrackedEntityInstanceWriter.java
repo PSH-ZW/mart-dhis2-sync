@@ -90,6 +90,7 @@ public class TrackedEntityInstanceWriter implements ItemWriter {
         if (isSyncFailure) {
             throw new Exception();
         } else {
+            //TODO: this can be removed.
             updateMarker();
         }
         TEIUtil.resetPatientTEIUidMap();
