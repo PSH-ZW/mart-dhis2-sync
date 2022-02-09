@@ -56,4 +56,10 @@ public class EventDAO {
             logger.error(String.format("Could not mark event with id %s as synced", id), e);
         }
     }
+
+    public boolean dataExistsInTableForEncounter(String tableName, String encounterId) {
+        String sql = "select count(*) from %s where encounter_id = %s";
+        int count = jdbcTemplate.queryForObject(String.format(sql, tableName, encounterId), Integer.class);
+        return count > 0;
+    }
 }

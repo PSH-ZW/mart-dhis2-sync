@@ -1,5 +1,6 @@
 package com.thoughtworks.martdhis2sync.reader;
 
+import com.thoughtworks.martdhis2sync.dao.EventDAO;
 import com.thoughtworks.martdhis2sync.model.EnrollmentAPIPayLoad;
 import com.thoughtworks.martdhis2sync.model.MappingJson;
 import com.thoughtworks.martdhis2sync.util.BatchUtil;
@@ -24,6 +25,9 @@ public class MappingReader {
 
     @Autowired
     private DataSource dataSource;
+
+    @Autowired
+    private EventDAO eventDAO;
 
     @Value("classpath:sql/InstanceReader.sql")
     private Resource instanceResource;
@@ -101,7 +105,9 @@ public class MappingReader {
     public JdbcCursorItemReader<Map<String, Object>> getEnrollmentAndEventReader(String encounterId, MappingJson mappingJson) {
         StringBuilder leftJoins = new StringBuilder();
         for(String tableName : mappingJson.getFormTableMappings().keySet()) {
-            leftJoins.append(String.format("LEFT JOIN %s ON e.encounter_id = %s.encounter_id ", tableName, tableName));
+            if(eventDAO.dataExistsInTableForEncounter(tableName, encounterId)) {
+                leftJoins.append(String.format("LEFT JOIN %s ON e.encounter_id = %s.encounter_id ", tableName, tableName));
+            }
         }
         String sql = String.format(getSql(enrollmentWithEvents), leftJoins, encounterId);
         return get(sql);
