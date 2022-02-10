@@ -15,8 +15,4 @@ public class MappingService {
     public Map<String, Object> getMapping(String mapping) {
         return mappingDAO.getMapping(mapping);
     }
-
-    public Map<String, Object> getMapping(Integer programId) {
-        return mappingDAO.getMapping(programId);
-    }
 }

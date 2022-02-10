@@ -110,7 +110,7 @@ public class TrackersHandler {
     }
 
     public void addEnrollmentForPatient(EnrollmentAPIPayLoad enrollment) {
-        if(!enrollmentDAO.enrolmentExistsInTracker(enrollment.getEnrollmentId())) {
+        if(!enrollmentDAO.enrolmentExistsForPatient(enrollment.getInstanceId())) {
             enrollmentDAO.insertIntoEnrollmentTracker(enrollment);
         }
     }

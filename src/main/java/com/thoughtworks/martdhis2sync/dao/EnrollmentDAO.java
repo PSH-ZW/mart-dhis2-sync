@@ -21,16 +21,17 @@ public class EnrollmentDAO {
     public String getEnrollmentIdForInstanceId(String instanceId) {
         String sql = "select enrolment_id from enrolment_tracker where instance_id = ?";
         try{
-            return jdbcTemplate.queryForObject(String.format(sql, instanceId), String.class);
+            return jdbcTemplate.queryForObject(sql, String.class, instanceId);
         } catch (DataAccessException e) {
-            e.printStackTrace();
+            logger.info(String.format("Could not find existing enrolment for instance %s. Creating new enrolment.",
+                    instanceId));
         }
         return "";
     }
 
-    public boolean enrolmentExistsInTracker(String enrolmentId) {
-        String sql = "select count(*) from enrolment_tracker where enrolment_id = '%s'";
-        int count = jdbcTemplate.queryForObject(String.format(sql, enrolmentId), Integer.class);
+    public boolean enrolmentExistsForPatient(String enrolmentId) {
+        String sql = "select count(*) from enrolment_tracker where instance_id = ?";
+        int count = jdbcTemplate.queryForObject(sql, Integer.class, enrolmentId);
         return count > 0;
     }
 

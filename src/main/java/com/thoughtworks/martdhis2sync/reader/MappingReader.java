@@ -109,7 +109,7 @@ public class MappingReader {
                 leftJoins.append(String.format("LEFT JOIN %s ON e.encounter_id = %s.encounter_id ", tableName, tableName));
             }
         }
-        String sql = String.format(getSql(enrollmentWithEvents), leftJoins, encounterId);
+        String sql = String.format(getSql(enrollmentWithEvents), leftJoins, encounterId, mappingJson.getDhisProgramStageId());
         return get(sql);
     }
 

@@ -59,7 +59,7 @@ public class TEIUtil {
 
     public static void setTrackedEntityInstanceIDs(JsonObject tableRowJsonObject) {
         trackedEntityInstanceIDs.put(
-                tableRowJsonObject.get("Patient_Identifier").getAsString(),
+                tableRowJsonObject.get("patient_identifier").getAsString(),
                 tableRowJsonObject.get("instance_id").getAsString()
         );
     }
