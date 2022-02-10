@@ -5,6 +5,7 @@ import com.thoughtworks.martdhis2sync.dao.EventDAO;
 import com.thoughtworks.martdhis2sync.model.Config;
 import com.thoughtworks.martdhis2sync.model.DhisSyncEvent;
 import com.thoughtworks.martdhis2sync.model.MappingJson;
+import com.thoughtworks.martdhis2sync.util.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -39,11 +40,6 @@ public class SyncService {
         for (DhisSyncEvent syncEvent : eventsToSync) {
             //TODO: log proper program name
             loggerService.addLog(syncEvent.getProgramId(), syncEvent.getUser(), syncEvent.getComment());
-            Map<String, Object> mapping = mappingService.getMapping(syncEvent.getProgramId());
-
-            Gson gson = new Gson();
-            MappingJson mappingJson = gson.fromJson(mapping.get("mapping_json").toString(), MappingJson.class);
-            Config config = gson.fromJson(mapping.get("config").toString(), Config.class);
 
             try {
                 Map<String, String> invalidPatients = teiService.verifyOrgUnitsForPatients();
@@ -55,9 +51,19 @@ public class SyncService {
                     throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Prevalidation for sync service failed." +
                             " Invalid Org Unit specified for below patients. Update Patient Info in OpenMRS, run Bahmni MART");
                 }
-                teiService.triggerJob(syncEvent.getPatientId(), syncEvent.getUser(),
-                        config.getSearchable(), config.getComparable());
-                programDataSyncService.syncProgramDetails(syncEvent, mappingJson);
+                //TODO:Use proper searchable and comparable
+                if(syncEvent.getTypename().equals(Constants.ENCOUNTER)) {
+                    //TODO:get it as an object.
+                    Map<String, Object> mapping = mappingService.getMapping(syncEvent.getProgramId());
+                    Gson gson = new Gson();
+                    MappingJson mappingJson = gson.fromJson(mapping.get("mapping_json").toString(), MappingJson.class);
+                    Config config = gson.fromJson(mapping.get("config").toString(), Config.class);
+                    teiService.getTrackedEntityInstances(syncEvent.getPatientId());
+                    teiService.triggerJob(syncEvent.getPatientId(), syncEvent.getUser(),
+                            config.getSearchable(), config.getComparable());
+
+                    programDataSyncService.syncProgramDetails(syncEvent, mappingJson);
+                }
                 loggerService.updateLog(syncEvent.getProgramId(), SUCCESS);
                 eventDAO.markEventAsSynced(syncEvent.getId());
             } catch (HttpServerErrorException e) {

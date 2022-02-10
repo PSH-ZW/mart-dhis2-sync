@@ -68,12 +68,13 @@ public class TrackedEntityInstanceProcessor implements ItemProcessor {
     private String createRequestBodyForTrackedEntityInstance(JsonObject tableRowJsonObject, JsonObject mappingJsonObject) {
         Set<String> keys = tableRowJsonObject.keySet();
 
+        String instanceId = tableRowJsonObject.get("instance_id") != null ? tableRowJsonObject.get("instance_id").toString() : "";
         StringBuilder attributeSet = new StringBuilder(
                 String.format("{\"trackedEntityType\": \"%s\", " +
                                 "\"trackedEntityInstance\": %s, " +
                                 "\"orgUnit\":%s, \"attributes\":[",
                         teUID,
-                        tableRowJsonObject.get("instance_id").toString(),
+                        instanceId,
                         tableRowJsonObject.get(ORGUNIT_UID).toString()));
         for (String key : keys) {
             if (null != mappingJsonObject.get(key)) {

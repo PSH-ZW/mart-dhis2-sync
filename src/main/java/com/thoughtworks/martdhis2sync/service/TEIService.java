@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 import java.io.SyncFailedException;
@@ -132,6 +133,34 @@ public class TEIService {
         logger.info("TEIUtil.getTrackedEntityInstanceInfos().size(): " + TEIUtil.getTrackedEntityInstanceInfos().size());
     }
 
+    public void getTrackedEntityInstances(String patientId) throws IOException {
+        StringBuilder url = new StringBuilder();
+
+        url.append(TEI_URI);
+        url.append("&ou=");
+        url.append(orgUnitID);
+        url.append("&ouMode=DESCENDANTS");
+
+
+        StringBuilder uri = new StringBuilder();
+        uri.append("&filter=");
+        uri.append("zRA08XEYiSF"); //TODO: uic hardcoded here, get it from mapping.
+        uri.append(":IN:");
+
+        List<String> uicForPatient = patientDAO.getUicForPatient(patientId);
+        if(!CollectionUtils.isEmpty(uicForPatient)) {
+            uicForPatient.forEach(uic -> {
+                uri.append(uic);
+                uri.append(";");
+            });
+        }
+        uri.append("&includeAllAttributes=true");
+        List<TrackedEntityInstanceInfo> allTEIInfos = syncRepository.getTrackedEntityInstances(url.toString() + uri).getBody().getTrackedEntityInstances();
+        TEIUtil.setTrackedEntityInstanceInfos(allTEIInfos);
+
+        logger.info("TEIUtil.getTrackedEntityInstanceInfos().size(): " + TEIUtil.getTrackedEntityInstanceInfos().size());
+    }
+
     public void getEnrollmentsForInstances(String enrollmentTable, String eventTable, String programName) throws Exception {
         logger.info("Enrollment Table is " + enrollmentTable);
         logger.info("Event Table is " + eventTable);
@@ -146,12 +175,12 @@ public class TEIService {
             int lowerLimit = 0;
             int upperLimit = TEI_FILTER_URI_LIMIT;
             List<TrackedEntityInstanceInfo> result = new ArrayList<>();
-            while(lowerLimit < instanceIdsList.size()) {
-                if(upperLimit > instanceIdsList.size()) {
+            while (lowerLimit < instanceIdsList.size()) {
+                if (upperLimit > instanceIdsList.size()) {
                     upperLimit = instanceIdsList.size();
                 }
                 logger.info("Lower : " + lowerLimit + " Upper " + upperLimit);
-                List<String> subInstanceIds  =  instanceIdsList.subList(lowerLimit , upperLimit);
+                List<String> subInstanceIds = instanceIdsList.subList(lowerLimit, upperLimit);
                 lowerLimit = upperLimit;
                 upperLimit += TEI_FILTER_URI_LIMIT;
 
@@ -207,29 +236,29 @@ public class TEIService {
         return result;
     }
 
-    public Map<String,String> verifyOrgUnitsForPatients(String instanceTable) {
+    public Map<String, String> verifyOrgUnitsForPatients(String instanceTable) {
         List<Map<String, Object>> rows = jdbcTemplate.queryForList(String.format(PATIENTS_WITH_INVALID_ORG_UNIT_QUERY, instanceTable));
-        Map<String,String> invalidPatients = new HashMap<>();
+        Map<String, String> invalidPatients = new HashMap<>();
         rows.forEach(row -> {
-            String patientID = (String)row.get("patient_identifier");
-            String orgUnit = (String)row.get("org_unit");
-            invalidPatients.put(patientID,orgUnit);
+            String patientID = (String) row.get("patient_identifier");
+            String orgUnit = (String) row.get("org_unit");
+            invalidPatients.put(patientID, orgUnit);
         });
         return invalidPatients;
     }
 
     //TODO: remove everything on top
 
-    public Map<String,String> verifyOrgUnitsForPatients() {
+    public Map<String, String> verifyOrgUnitsForPatients() {
         final String sql = "select \"patient_identifier\",\"org_unit\" from patient " +
                 "where \"org_unit\" is null or " +
                 "\"org_unit\" not in (select org_unit from  orgunit_tracker ot)";
         List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
-        Map<String,String> invalidPatients = new HashMap<>();
+        Map<String, String> invalidPatients = new HashMap<>();
         rows.forEach(row -> {
-            String patientID = (String)row.get("patient_identifier");
-            String orgUnit = (String)row.get("org_unit");
-            invalidPatients.put(patientID,orgUnit);
+            String patientID = (String) row.get("patient_identifier");
+            String orgUnit = (String) row.get("org_unit");
+            invalidPatients.put(patientID, orgUnit);
         });
         return invalidPatients;
     }

@@ -45,4 +45,11 @@ public class PatientDAO {
         }
         return null;
     }
+
+    public List<String> getUicForPatient(String patientId) {
+        String sql = "select uic from patient where patient_id = %s";
+        List<String> uics =  jdbcTemplate.query(String.format(sql, patientId),
+                JdbcTemplateMapperFactory.newInstance().newRowMapper(String.class));
+        return uics;
+    }
 }
