@@ -3,6 +3,7 @@ package com.thoughtworks.martdhis2sync.step;
 import com.thoughtworks.martdhis2sync.model.MappingJson;
 import com.thoughtworks.martdhis2sync.processor.NewEnrollmentWithEventsProcessor;
 import com.thoughtworks.martdhis2sync.reader.MappingReader;
+import com.thoughtworks.martdhis2sync.util.BatchUtil;
 import com.thoughtworks.martdhis2sync.util.Constants;
 import com.thoughtworks.martdhis2sync.writer.NewActiveAndCompletedEnrollmentWithEventsWriter;
 import org.springframework.batch.core.Step;
@@ -41,14 +42,17 @@ public class ProgramDataSyncStep {
     private NewEnrollmentWithEventsProcessor getProcessor(MappingJson mappingObj) {
         NewEnrollmentWithEventsProcessor processor = processorObjectFactory.getObject();
         Map<String, String> columnMappingsWithProgramStageId = new HashMap<>();
-        Map<String, Map<String, String>> formTableMappings = mappingObj.getFormTableMappings();
+        Map<String, Map<String, Map<String, String>>> formTableMappings = mappingObj.getFormTableMappings();
         for(String table : formTableMappings.keySet()) {
-            columnMappingsWithProgramStageId.putAll(formTableMappings.get(table));
+            Map<String, Map<String, String>> columnMappingWithElementNameAndId = formTableMappings.get(table);
+            Map<String, String> columnMappingWithId = BatchUtil.getColumnNameToDhisElementIdMap(columnMappingWithElementNameAndId);
+            columnMappingsWithProgramStageId.putAll(columnMappingWithId);
         }
         columnMappingsWithProgramStageId.put(Constants.DHIS_PROGRAM_STAGE_ID, mappingObj.getDhisProgramStageId());
         processor.setMappingObj(columnMappingsWithProgramStageId);
 
         return processor;
     }
+
 
 }

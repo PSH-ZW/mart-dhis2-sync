@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.TimeZone;
 
 public class BatchUtil {
@@ -73,5 +75,14 @@ public class BatchUtil {
     public static String getEscapedString(String value) {
         return value.replace("\\","\\\\")
                     .replace("\"","\\\"");
+    }
+
+    public static Map<String, String> getColumnNameToDhisElementIdMap(Map<String, Map<String, String>> mapping) {
+        Map<String, String> columnToElementMapping = new HashMap<>();
+        for(String columnName : mapping.keySet()) {
+            columnToElementMapping.put(columnName, mapping.get(columnName).get("id"));
+        }
+
+        return columnToElementMapping;
     }
 }

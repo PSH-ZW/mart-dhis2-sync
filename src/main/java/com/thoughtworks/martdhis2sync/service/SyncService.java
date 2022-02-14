@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpServerErrorException;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -60,7 +62,7 @@ public class SyncService {
                     Config config = gson.fromJson(mapping.get("config").toString(), Config.class);
                     teiService.getTrackedEntityInstances(syncEvent.getPatientId());
                     teiService.triggerJob(syncEvent.getPatientId(), syncEvent.getUser(),
-                            config.getSearchable(), config.getComparable());
+                            Collections.singletonList("uic"), new ArrayList<>());
 
                     programDataSyncService.syncProgramDetails(syncEvent, mappingJson);
                 }

@@ -7,6 +7,7 @@ import com.thoughtworks.martdhis2sync.dao.PatientDAO;
 import com.thoughtworks.martdhis2sync.model.*;
 import com.thoughtworks.martdhis2sync.repository.SyncRepository;
 import com.thoughtworks.martdhis2sync.step.TrackedEntityInstanceStep;
+import com.thoughtworks.martdhis2sync.util.BatchUtil;
 import com.thoughtworks.martdhis2sync.util.TEIUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -274,7 +275,9 @@ public class TEIService {
             Map<String, Object> mapping = mappingService.getMapping("Patient");
             Gson gson = new Gson();
             MappingJson mappingJson = gson.fromJson(mapping.get("mapping_json").toString(), MappingJson.class);
-            Map<String, String> patientMapping = mappingJson.getFormTableMappings().get("patient");
+            //TODO: add constants for patient table name.
+            Map<String, Map<String, String>> patientMappingWithElementNames = mappingJson.getFormTableMappings().get("patient");
+            Map<String, String> patientMapping = BatchUtil.getColumnNameToDhisElementIdMap(patientMappingWithElementNames);
             steps.add(trackedEntityInstanceStep.get(patientId, patientMapping, searchableAttributes, comparableAttributes));
             jobService.triggerJob(user, TEI_JOB_NAME, steps, "");
         } catch (Exception e) {

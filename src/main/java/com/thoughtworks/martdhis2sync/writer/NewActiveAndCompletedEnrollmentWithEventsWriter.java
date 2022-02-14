@@ -1,13 +1,7 @@
 package com.thoughtworks.martdhis2sync.writer;
 
 import com.thoughtworks.martdhis2sync.controller.PushController;
-import com.thoughtworks.martdhis2sync.model.DHISEnrollmentSyncResponse;
-import com.thoughtworks.martdhis2sync.model.EnrollmentAPIPayLoad;
-import com.thoughtworks.martdhis2sync.model.EnrollmentDetails;
-import com.thoughtworks.martdhis2sync.model.EnrollmentImportSummary;
-import com.thoughtworks.martdhis2sync.model.Event;
-import com.thoughtworks.martdhis2sync.model.EventTracker;
-import com.thoughtworks.martdhis2sync.model.ProcessedTableRow;
+import com.thoughtworks.martdhis2sync.model.*;
 import com.thoughtworks.martdhis2sync.repository.SyncRepository;
 import com.thoughtworks.martdhis2sync.responseHandler.EnrollmentResponseHandler;
 import com.thoughtworks.martdhis2sync.responseHandler.EventResponseHandler;
@@ -174,6 +168,11 @@ public class NewActiveAndCompletedEnrollmentWithEventsWriter implements ItemWrit
     }
 
     private String getEnrollmentId(EnrollmentAPIPayLoad enrollment) {
+        String enrollmentId = enrollment.getEnrollmentId();
+        if(!StringUtils.isEmpty(enrollmentId)) {
+            return enrollmentId;
+        }
+        //TODO: can remove this if we are not stopping enrollments, Currently we have only one program and all are enrolled to it.
         List<EnrollmentDetails> enrollmentDetails = TEIUtil.getInstancesWithEnrollments().get(enrollment.getInstanceId());
         if (null == enrollmentDetails || enrollmentDetails.isEmpty()) {
             return "";
