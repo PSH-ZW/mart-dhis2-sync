@@ -3,6 +3,7 @@ package com.thoughtworks.martdhis2sync.responseHandler;
 import com.thoughtworks.martdhis2sync.model.*;
 import com.thoughtworks.martdhis2sync.service.JobService;
 import com.thoughtworks.martdhis2sync.service.LoggerService;
+import com.thoughtworks.martdhis2sync.trackerHandler.TrackersHandler;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -23,6 +24,9 @@ public class EventResponseHandler {
 
     @Autowired
     private LoggerService loggerService;
+
+    @Autowired
+    private TrackersHandler trackersHandler;
 
     public void process(Collection<EnrollmentAPIPayLoad> payLoads, List<EnrollmentImportSummary> importSummaries, List<EventTracker> eventTrackers, Logger logger, String logPrefix) {
         Iterator<EventTracker> eventTrackerIterator = eventTrackers.iterator();
@@ -48,6 +52,7 @@ public class EventResponseHandler {
             if (isImported(importSummary)) {
                 eventTracker.setEventId(importSummary.getReference());
                 eventsToSaveInTracker.add(eventTracker);
+                trackersHandler.addEventIdForEncounterAndProgramStage(eventTracker);
             }
         });
     }

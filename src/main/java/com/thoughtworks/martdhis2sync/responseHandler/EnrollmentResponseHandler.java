@@ -30,6 +30,7 @@ public class EnrollmentResponseHandler {
             EnrollmentAPIPayLoad enrollment = payLoadIterator.next();
             enrollment.setEnrollmentId(importSummary.getReference());
             enrollmentsToSaveInTracker.add(enrollment);
+            //TDDO: check if the above is needed
             trackersHandler.addEnrollmentForPatient(enrollment);
         });
     }

@@ -11,4 +11,5 @@ public class EventTracker {
     private String program;
     private String eventUniqueId;
     private String programStage;
+    private Integer encounterId;
 }

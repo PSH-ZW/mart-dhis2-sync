@@ -72,6 +72,7 @@ public class UpdatedEnrollmentWithEventsProcessor extends EnrollmentWithEventPro
                 dateString,
                 hasValue(eventStatus) ? eventStatus.getAsString() : Event.STATUS_COMPLETED,
                 tableRow.get("event_unique_id").getAsString(),
+                tableRow.get("encounter_id").getAsInt(),
                 getDataValues(tableRow, mapping)
         );
     }

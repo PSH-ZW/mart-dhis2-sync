@@ -40,10 +40,9 @@ public abstract class EnrollmentWithEventProcessor {
         }
         EnrollmentAPIPayLoad enrollmentAPIPayLoad = getEnrollmentAPIPayLoad(tableRowJsonObject, events);
 
-        JsonElement programUniqueId = tableRowJsonObject.get("program_unique_id");
-        JsonElement eventProgramUniqueId = tableRowJsonObject.get("event_program_unique_id");
         return new ProcessedTableRow( //TODO: update this.
                 "TestId",
+                tableRowJsonObject.get("encounter_id").getAsInt(),
                 enrollmentAPIPayLoad
         );
     }

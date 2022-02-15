@@ -20,5 +20,6 @@ public class Event {
     private String eventDate;
     private String status;
     private String eventUniqueId;
+    private Integer encounterId;
     private Map<String, String> dataValues;
 }

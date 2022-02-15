@@ -2,6 +2,7 @@ package com.thoughtworks.martdhis2sync.dao;
 
 import com.thoughtworks.martdhis2sync.model.AnalyticsCronJob;
 import com.thoughtworks.martdhis2sync.model.DhisSyncEvent;
+import com.thoughtworks.martdhis2sync.model.EventTracker;
 import org.simpleflatmapper.jdbc.spring.JdbcTemplateMapperFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,5 +62,21 @@ public class EventDAO {
         String sql = "select count(*) from %s where encounter_id = %s";
         int count = jdbcTemplate.queryForObject(String.format(sql, tableName, encounterId), Integer.class);
         return count > 0;
+    }
+
+    public boolean eventExistsInEventTracker(String eventId) {
+        String sql = "select count(*) from event_tracker where event_id = ?";
+        int count = jdbcTemplate.queryForObject(sql, Integer.class, eventId);
+        return count > 0;
+    }
+
+    public void insertIntoEventTracker(EventTracker eventTracker) {
+        String sql = "update event_tracker set event_id = ? where encounter_id = ? and program_stage = ?";
+        try{
+            jdbcTemplate.update(sql, eventTracker.getEventId(), eventTracker.getEncounterId(), eventTracker.getProgramStage());
+        } catch (DataAccessException e) {
+            //TODO: log using loggerService
+            e.printStackTrace();
+        }
     }
 }

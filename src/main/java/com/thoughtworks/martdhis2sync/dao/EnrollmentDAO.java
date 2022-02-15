@@ -29,7 +29,7 @@ public class EnrollmentDAO {
         return "";
     }
 
-    public boolean enrolmentExistsForPatient(String enrolmentId) {
+    public boolean enrolmentExistsInEnrolmentTracker(String enrolmentId) {
         String sql = "select count(*) from enrolment_tracker where instance_id = ?";
         int count = jdbcTemplate.queryForObject(sql, Integer.class, enrolmentId);
         return count > 0;
@@ -40,6 +40,7 @@ public class EnrollmentDAO {
         try{
             jdbcTemplate.update(sql, enrollment.getInstanceId(), enrollment.getEnrollmentId());
         } catch (DataAccessException e) {
+            //TODO: log using loggerService
             e.printStackTrace();
         }
     }

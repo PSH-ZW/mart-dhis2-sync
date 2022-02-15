@@ -1,6 +1,7 @@
 package com.thoughtworks.martdhis2sync.trackerHandler;
 
 import com.thoughtworks.martdhis2sync.dao.EnrollmentDAO;
+import com.thoughtworks.martdhis2sync.dao.EventDAO;
 import com.thoughtworks.martdhis2sync.model.EnrollmentAPIPayLoad;
 import com.thoughtworks.martdhis2sync.model.EventTracker;
 import com.thoughtworks.martdhis2sync.util.BatchUtil;
@@ -28,6 +29,9 @@ public class TrackersHandler {
 
     @Autowired
     private EnrollmentDAO enrollmentDAO;
+
+    @Autowired
+    private EventDAO eventDAO;
 
     public void insertInEnrollmentTracker(String user, String logPrefix, Logger logger) {
         String sql = "INSERT INTO public.enrollment_tracker(" +
@@ -110,8 +114,14 @@ public class TrackersHandler {
     }
 
     public void addEnrollmentForPatient(EnrollmentAPIPayLoad enrollment) {
-        if(!enrollmentDAO.enrolmentExistsForPatient(enrollment.getInstanceId())) {
+        if(!enrollmentDAO.enrolmentExistsInEnrolmentTracker(enrollment.getInstanceId())) {
             enrollmentDAO.insertIntoEnrollmentTracker(enrollment);
+        }
+    }
+
+    public void addEventIdForEncounterAndProgramStage(EventTracker eventTracker) {
+        if(!eventDAO.eventExistsInEventTracker(eventTracker.getEventId())) {
+            eventDAO.insertIntoEventTracker(eventTracker);
         }
     }
 }

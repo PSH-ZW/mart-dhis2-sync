@@ -55,7 +55,8 @@ public class EventUtil {
                 getUnquotedString(tableRow.get("instance_id").toString()),
                 getUnquotedString(tableRow.get("program").toString()),
                 getUnquotedString(tableRow.get("event_unique_id").toString()),
-                getUnquotedString(tableRow.get("program_stage").toString())
+                getUnquotedString(tableRow.get("program_stage").toString()),
+                tableRow.get("encounter_id").getAsInt()
         );
     }
 
@@ -76,7 +77,8 @@ public class EventUtil {
                 event.getTrackedEntityInstance(),
                 event.getProgram(),
                 event.getEventUniqueId(),
-                event.getProgramStage()
+                event.getProgramStage(),
+                event.getEncounterId()
             )
         ).collect(Collectors.toList());
     }

@@ -58,7 +58,7 @@ public class NewEnrollmentWithEventsProcessor extends EnrollmentWithEventProcess
     Event getEvent(JsonObject tableRow, JsonObject mapping) {
         String instanceId = patientDAO.getInstanceIdForPatient(tableRow.get("patient_id").getAsString());
         return new Event(
-                "",
+                "", //TODO : get eventId if it exists.
                 instanceId,
                 enrollmentDAO.getEnrollmentIdForInstanceId(instanceId),
                 programId,
@@ -67,6 +67,7 @@ public class NewEnrollmentWithEventsProcessor extends EnrollmentWithEventProcess
                 "2021-10-29T09:22:03.510",
                 Event.ACTIVE,
                 "TestId",
+                tableRow.get("encounter_id").getAsInt(),
                 getDataValues(tableRow, mapping)
         );
     }
