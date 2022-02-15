@@ -2,6 +2,7 @@ package com.thoughtworks.martdhis2sync.processor;
 
 import com.google.gson.JsonObject;
 import com.thoughtworks.martdhis2sync.dao.EnrollmentDAO;
+import com.thoughtworks.martdhis2sync.dao.EventDAO;
 import com.thoughtworks.martdhis2sync.dao.PatientDAO;
 import com.thoughtworks.martdhis2sync.model.EnrollmentAPIPayLoad;
 import com.thoughtworks.martdhis2sync.model.Event;
@@ -32,6 +33,9 @@ public class NewEnrollmentWithEventsProcessor extends EnrollmentWithEventProcess
     @Autowired
     protected EnrollmentDAO enrollmentDAO;
 
+    @Autowired
+    protected EventDAO eventDAO;
+
     @Setter
     private Object mappingObj;
 
@@ -57,12 +61,14 @@ public class NewEnrollmentWithEventsProcessor extends EnrollmentWithEventProcess
 
     Event getEvent(JsonObject tableRow, JsonObject mapping) {
         String instanceId = patientDAO.getInstanceIdForPatient(tableRow.get("patient_id").getAsString());
+        String programStageId = mapping.get(Constants.DHIS_PROGRAM_STAGE_ID).getAsString();
+        Integer encounterId = tableRow.get("encounter_id").getAsInt();
         return new Event(
-                "", //TODO : get eventId if it exists.
+                eventDAO.getEventIdFromEventTrackerIfExists(encounterId, programStageId),
                 instanceId,
                 enrollmentDAO.getEnrollmentIdForInstanceId(instanceId),
                 programId,
-                mapping.get(Constants.DHIS_PROGRAM_STAGE_ID).getAsString(),
+                programStageId,
                 orgUnitId,
                 "2021-10-29T09:22:03.510",
                 Event.ACTIVE,

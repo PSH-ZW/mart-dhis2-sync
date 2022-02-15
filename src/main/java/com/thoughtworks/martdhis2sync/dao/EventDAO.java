@@ -79,4 +79,16 @@ public class EventDAO {
             e.printStackTrace();
         }
     }
+
+    public String getEventIdFromEventTrackerIfExists(Integer encounterId, String programStageId) {
+        String sql = "select event_id from event_tracker where encounter_id = ? and program_stage = ?";
+        String eventId = null;
+        try{
+            eventId = jdbcTemplate.queryForObject(sql, String.class, encounterId, programStageId);
+        } catch (DataAccessException e) {
+            logger.info(String.format("Could not find existing event_id for encounter %s and programStage : %s. Creating new enrolment.",
+                    encounterId, programStageId));
+        }
+        return eventId != null? eventId : "";
+    }
 }

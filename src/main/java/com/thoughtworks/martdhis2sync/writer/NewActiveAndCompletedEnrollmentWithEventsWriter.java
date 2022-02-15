@@ -142,7 +142,7 @@ public class NewActiveAndCompletedEnrollmentWithEventsWriter implements ItemWrit
         events.forEach(event -> {
             eventsApiBuilder
                 .append(String.format(EVENT_API_FORMAT,
-                        "",
+                        event.getEvent(),
                         event.getTrackedEntityInstance(),
                         event.getEnrollment(),
                         event.getProgram(),
