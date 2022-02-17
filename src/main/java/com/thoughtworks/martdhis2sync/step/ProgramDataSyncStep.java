@@ -48,7 +48,7 @@ public class ProgramDataSyncStep {
             Map<String, String> columnMappingWithId = BatchUtil.getColumnNameToDhisElementIdMap(columnMappingWithElementNameAndId);
             columnMappingsWithProgramStageId.putAll(columnMappingWithId);
         }
-        columnMappingsWithProgramStageId.put(Constants.DHIS_PROGRAM_STAGE_ID, mappingObj.getDhisProgramStageId());
+        columnMappingsWithProgramStageId.put(Constants.DHIS_PROGRAM_STAGE_ID, mappingObj.getDhisProgramStageId().getId());
         processor.setMappingObj(columnMappingsWithProgramStageId);
 
         return processor;

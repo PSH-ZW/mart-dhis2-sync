@@ -51,8 +51,8 @@ public class NewEnrollmentWithEventsProcessor extends EnrollmentWithEventProcess
                 instanceId,
                programId,
                orgUnitId,
-               "2021-09-28T09:45:20.373",
-               "2021-09-28T09:45:20.373",
+               "2021-09-28T09:45:20.373",//TODO:add date started in enrolment_tracker.
+               tableRowJsonObject.get("date_created").getAsString(),
                "ACTIVE",
                "",
                events
@@ -70,7 +70,7 @@ public class NewEnrollmentWithEventsProcessor extends EnrollmentWithEventProcess
                 programId,
                 programStageId,
                 orgUnitId,
-                "2021-10-29T09:22:03.510",
+                tableRow.get("date_created").getAsString(),
                 Event.ACTIVE,
                 "TestId",
                 tableRow.get("encounter_id").getAsInt(),

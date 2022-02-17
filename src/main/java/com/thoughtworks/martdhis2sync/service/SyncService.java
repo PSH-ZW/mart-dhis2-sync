@@ -6,15 +6,13 @@ import com.thoughtworks.martdhis2sync.model.Config;
 import com.thoughtworks.martdhis2sync.model.DhisSyncEvent;
 import com.thoughtworks.martdhis2sync.model.MappingJson;
 import com.thoughtworks.martdhis2sync.util.Constants;
+import com.thoughtworks.martdhis2sync.util.TEIUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpServerErrorException;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.thoughtworks.martdhis2sync.service.LoggerService.FAILED;
 import static com.thoughtworks.martdhis2sync.service.LoggerService.SUCCESS;
@@ -60,6 +58,9 @@ public class SyncService {
                     Gson gson = new Gson();
                     MappingJson mappingJson = gson.fromJson(mapping.get("mapping_json").toString(), MappingJson.class);
                     Config config = gson.fromJson(mapping.get("config").toString(), Config.class);
+                    //TODO: clearing the global maps, we need to handle instance_tracking properly.
+                    TEIUtil.resetPatientTEIUidMap();
+                    TEIUtil.resetTrackedEntityInstaceIDs();
                     teiService.getTrackedEntityInstances(syncEvent.getPatientId());
                     teiService.triggerJob(syncEvent.getPatientId(), syncEvent.getUser(),
                             Collections.singletonList("uic"), new ArrayList<>());

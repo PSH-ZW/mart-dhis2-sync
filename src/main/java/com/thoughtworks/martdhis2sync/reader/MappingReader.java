@@ -54,7 +54,7 @@ public class MappingReader {
     @Value("classpath:sql/EnrollmentWithEvents.sql")
     private Resource enrollmentWithEvents;
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private JdbcCursorItemReader<Map<String, Object>> get(String sql) {
         JdbcCursorItemReader<Map<String, Object>> reader = new JdbcCursorItemReader<>();
@@ -109,7 +109,7 @@ public class MappingReader {
                 leftJoins.append(String.format("LEFT JOIN %s ON e.encounter_id = %s.encounter_id ", tableName, tableName));
             }
         }
-        String sql = String.format(getSql(enrollmentWithEvents), leftJoins, encounterId, mappingJson.getDhisProgramStageId());
+        String sql = String.format(getSql(enrollmentWithEvents), leftJoins, encounterId, mappingJson.getDhisProgramStageId().getId());
         return get(sql);
     }
 
