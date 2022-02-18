@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static com.thoughtworks.martdhis2sync.util.BatchUtil.*;
 import static com.thoughtworks.martdhis2sync.util.EventUtil.getDataValues;
 
 @Component
@@ -46,13 +47,14 @@ public class NewEnrollmentWithEventsProcessor extends EnrollmentWithEventProcess
 
     EnrollmentAPIPayLoad getEnrollmentAPIPayLoad(JsonObject tableRowJsonObject, List<Event> events) {
         String instanceId = patientDAO.getInstanceIdForPatient(tableRowJsonObject.get("patient_id").getAsString());
+        String incidentDate = tableRowJsonObject.get("date_created").getAsString();
         return new EnrollmentAPIPayLoad(
                enrollmentDAO.getEnrollmentIdForInstanceId(instanceId),
                 instanceId,
                programId,
                orgUnitId,
                "2021-09-28T09:45:20.373",//TODO:add date started in enrolment_tracker.
-               tableRowJsonObject.get("date_created").getAsString(),
+                getFormattedDateString(incidentDate, DATEFORMAT_WITH_24HR_TIME, DATEFORMAT_WITHOUT_TIME),
                "ACTIVE",
                "",
                events
@@ -63,6 +65,7 @@ public class NewEnrollmentWithEventsProcessor extends EnrollmentWithEventProcess
         String instanceId = patientDAO.getInstanceIdForPatient(tableRow.get("patient_id").getAsString());
         String programStageId = mapping.get(Constants.DHIS_PROGRAM_STAGE_ID).getAsString();
         Integer encounterId = tableRow.get("encounter_id").getAsInt();
+        String eventDate = tableRow.get("date_created").getAsString();
         return new Event(
                 eventDAO.getEventIdFromEventTrackerIfExists(encounterId, programStageId),
                 instanceId,
@@ -70,7 +73,7 @@ public class NewEnrollmentWithEventsProcessor extends EnrollmentWithEventProcess
                 programId,
                 programStageId,
                 orgUnitId,
-                tableRow.get("date_created").getAsString(),
+                getFormattedDateString(eventDate, DATEFORMAT_WITH_24HR_TIME, DATEFORMAT_WITHOUT_TIME),
                 Event.ACTIVE,
                 "TestId",
                 tableRow.get("encounter_id").getAsInt(),

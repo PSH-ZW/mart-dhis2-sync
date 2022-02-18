@@ -134,7 +134,7 @@ public class TEIService {
         logger.info("TEIUtil.getTrackedEntityInstanceInfos().size(): " + TEIUtil.getTrackedEntityInstanceInfos().size());
     }
 
-    public void getTrackedEntityInstances(String patientId) throws IOException {
+    public void getTrackedEntityInstances(String patientId) {
         StringBuilder url = new StringBuilder();
 
         url.append(TEI_URI);
