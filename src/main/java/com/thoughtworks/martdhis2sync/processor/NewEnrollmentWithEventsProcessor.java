@@ -46,14 +46,16 @@ public class NewEnrollmentWithEventsProcessor extends EnrollmentWithEventProcess
     }
 
     EnrollmentAPIPayLoad getEnrollmentAPIPayLoad(JsonObject tableRowJsonObject, List<Event> events) {
-        String instanceId = patientDAO.getInstanceIdForPatient(tableRowJsonObject.get("patient_id").getAsString());
+        String patientId = tableRowJsonObject.get("patient_id").getAsString();
+        String instanceId = patientDAO.getInstanceIdForPatient(patientId);
         String incidentDate = tableRowJsonObject.get("date_created").getAsString();
+        String programEnrolmentDate = enrollmentDAO.getOldestProgramEnrolmentDateForPatient(Integer.valueOf(patientId));
         return new EnrollmentAPIPayLoad(
                enrollmentDAO.getEnrollmentIdForInstanceId(instanceId),
                 instanceId,
                programId,
                orgUnitId,
-               "2021-09-28T09:45:20.373",//TODO:add date started in enrolment_tracker.
+               programEnrolmentDate,
                 getFormattedDateString(incidentDate, DATEFORMAT_WITH_24HR_TIME, DATEFORMAT_WITHOUT_TIME),
                "ACTIVE",
                "",

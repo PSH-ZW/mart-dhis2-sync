@@ -44,4 +44,14 @@ public class EnrollmentDAO {
             e.printStackTrace();
         }
     }
+
+    public String getOldestProgramEnrolmentDateForPatient(Integer patientId) {
+        String sql = "select date_enrolled from program_enrolment where patient_id = ? order by date_enrolled limit 1";
+        try{
+            return jdbcTemplate.queryForObject(sql, String.class, patientId);
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
 }
