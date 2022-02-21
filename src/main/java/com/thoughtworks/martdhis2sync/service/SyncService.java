@@ -5,7 +5,6 @@ import com.thoughtworks.martdhis2sync.dao.EventDAO;
 import com.thoughtworks.martdhis2sync.model.Config;
 import com.thoughtworks.martdhis2sync.model.DhisSyncEvent;
 import com.thoughtworks.martdhis2sync.model.MappingJson;
-import com.thoughtworks.martdhis2sync.util.Constants;
 import com.thoughtworks.martdhis2sync.util.TEIUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -47,22 +46,20 @@ public class SyncService {
             loggerService.addLog(syncEvent.getProgramId(), syncEvent.getUser(), syncEvent.getComment());
 
             try {
+                //TODO:get it as an object.
+                Map<String, Object> mapping = mappingService.getMapping(syncEvent.getProgramId());
+                Gson gson = new Gson();
+                MappingJson mappingJson = gson.fromJson(mapping.get("mapping_json").toString(), MappingJson.class);
                 //TODO:Use proper searchable and comparable
-                if(syncEvent.getTypename().equals(Constants.ENCOUNTER)) {
-                    //TODO:get it as an object.
-                    Map<String, Object> mapping = mappingService.getMapping(syncEvent.getProgramId());
-                    Gson gson = new Gson();
-                    MappingJson mappingJson = gson.fromJson(mapping.get("mapping_json").toString(), MappingJson.class);
-                    Config config = gson.fromJson(mapping.get("config").toString(), Config.class);
-                    //TODO: clearing the global maps, we need to handle instance_tracking properly.
-                    TEIUtil.resetPatientTEIUidMap();
-                    TEIUtil.resetTrackedEntityInstaceIDs();
-                    teiService.getTrackedEntityInstances(syncEvent.getPatientId());
-                    teiService.triggerJob(syncEvent.getPatientId(), syncEvent.getUser(),
-                            Collections.singletonList("uic"), new ArrayList<>());
+                Config config = gson.fromJson(mapping.get("config").toString(), Config.class);
+                //TODO: clearing the global maps, we need to handle instance_tracking properly.
+                TEIUtil.resetPatientTEIUidMap();
+                TEIUtil.resetTrackedEntityInstaceIDs();
+                teiService.getTrackedEntityInstances(syncEvent.getPatientId());
+                teiService.triggerJob(syncEvent.getPatientId(), syncEvent.getUser(),
+                        Collections.singletonList("uic"), new ArrayList<>());
 
-                    programDataSyncService.syncProgramDetails(syncEvent, mappingJson);
-                }
+                programDataSyncService.syncProgramDetails(syncEvent, mappingJson);
                 loggerService.updateLog(syncEvent.getProgramId(), SUCCESS);
                 eventDAO.markEventAsSynced(syncEvent.getId());
             } catch (HttpServerErrorException e) {

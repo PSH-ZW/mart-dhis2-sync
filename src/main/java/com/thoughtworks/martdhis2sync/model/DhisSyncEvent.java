@@ -4,7 +4,6 @@ public class DhisSyncEvent {
     private Integer id;
     private String programId;
     private String patientId;
-    private String typename;
     private String encounterId;
     private String user;
     private String comment;
@@ -55,13 +54,5 @@ public class DhisSyncEvent {
 
     public void setComment(String comment) {
         this.comment = comment;
-    }
-
-    public String getTypename() {
-        return typename;
-    }
-
-    public void setTypename(String typename) {
-        this.typename = typename;
     }
 }
