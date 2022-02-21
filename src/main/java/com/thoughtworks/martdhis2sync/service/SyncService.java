@@ -12,7 +12,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpServerErrorException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import static com.thoughtworks.martdhis2sync.service.LoggerService.FAILED;
 import static com.thoughtworks.martdhis2sync.service.LoggerService.SUCCESS;
@@ -36,21 +39,14 @@ public class SyncService {
     protected EventDAO eventDAO;
 
     public void syncToDhis() {
+        validatePatientsBeforeSync();
+
         List<DhisSyncEvent> eventsToSync = eventDAO.getEventsToSync();
         for (DhisSyncEvent syncEvent : eventsToSync) {
             //TODO: log proper program name
             loggerService.addLog(syncEvent.getProgramId(), syncEvent.getUser(), syncEvent.getComment());
 
             try {
-                Map<String, String> invalidPatients = teiService.verifyOrgUnitsForPatients();
-                if (invalidPatients.size() > 0) {
-                    loggerService.collateLogMessage("Pre validation for sync service failed." +
-                            " Invalid Org Unit specified for below patients. Update Patient Info in OpenMRS");
-                    invalidPatients.forEach((patientID, orgUnit) -> loggerService.collateLogMessage("[Patient ID (" + patientID + ") Org Unit ID (" + orgUnit + ")] "));
-                    loggerService.updateLog(syncEvent.getProgramId(), FAILED);
-                    throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Prevalidation for sync service failed." +
-                            " Invalid Org Unit specified for below patients. Update Patient Info in OpenMRS, run Bahmni MART");
-                }
                 //TODO:Use proper searchable and comparable
                 if(syncEvent.getTypename().equals(Constants.ENCOUNTER)) {
                     //TODO:get it as an object.
@@ -76,6 +72,17 @@ public class SyncService {
                 loggerService.updateLog(syncEvent.getProgramId(), FAILED);
                 e.printStackTrace();
             }
+        }
+    }
+
+    private void validatePatientsBeforeSync() {
+        Map<String, String> invalidPatients = teiService.verifyOrgUnitsForPatients();
+        if (invalidPatients.size() > 0) {
+            loggerService.collateLogMessage("Pre validation for sync service failed." +
+                    " Invalid Org Unit specified for below patients. Update Patient Info in OpenMRS");
+            invalidPatients.forEach((patientID, orgUnit) -> loggerService.collateLogMessage("[Patient ID (" + patientID + ") Org Unit ID (" + orgUnit + ")] "));
+            throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Prevalidation for sync service failed." +
+                    " Invalid Org Unit specified for below patients. Update Patient Info in OpenMRS, run Bahmni MART");
         }
     }
 }
