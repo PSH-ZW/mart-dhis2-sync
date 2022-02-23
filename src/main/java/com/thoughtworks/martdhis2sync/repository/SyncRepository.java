@@ -145,6 +145,7 @@ public class SyncRepository {
             logger.info("Request URI---> "+ uri);
             logger.info("Request body--->\n"+ body);
 
+            body = body.replace("\n", " ");
             responseEntity = restTemplate
                     .exchange(dhis2Url + uri, HttpMethod.POST, new HttpEntity<>(body, getHttpHeaders()), type);
 

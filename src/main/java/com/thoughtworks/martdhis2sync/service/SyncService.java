@@ -55,6 +55,7 @@ public class SyncService {
                 //TODO: clearing the global maps, we need to handle instance_tracking properly.
                 TEIUtil.resetPatientTEIUidMap();
                 TEIUtil.resetTrackedEntityInstaceIDs();
+                //TODO: call this only if instanceId is not present in instance_tracker;
                 teiService.getTrackedEntityInstances(syncEvent.getPatientId());
                 teiService.triggerJob(syncEvent.getPatientId(), syncEvent.getUser(),
                         Collections.singletonList("uic"), new ArrayList<>());
