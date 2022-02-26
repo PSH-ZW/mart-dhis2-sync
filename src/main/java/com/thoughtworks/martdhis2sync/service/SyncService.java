@@ -42,8 +42,8 @@ public class SyncService {
 
         List<DhisSyncEvent> eventsToSync = eventDAO.getEventsToSync();
         for (DhisSyncEvent syncEvent : eventsToSync) {
-            //TODO: log proper program name
-            loggerService.addLog(syncEvent.getProgramId(), syncEvent.getUser(), syncEvent.getComment());
+            String comment = String.format("Encounter id :%s ", syncEvent.getEncounterId());
+            loggerService.addLog(syncEvent.getProgramId(), syncEvent.getUser(), comment);
 
             try {
                 //TODO:get it as an object.
