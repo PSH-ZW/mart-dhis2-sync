@@ -23,17 +23,17 @@ public class LoggerService {
 
     private Set<String> logMessage = new LinkedHashSet<>();
 
-    public void addLog(String service, String user, String comments) {
+    public void addLog(Integer syncEventId, String service, String user, String comments) {
         logMessage.clear();
-        loggerDAO.addLog(service, user, comments);
+        loggerDAO.addLog(syncEventId, service, user, comments);
     }
 
-    public void updateLog(String service, String status) {
+    public void updateLog(Integer syncEventId, String status) {
         if (FAILED.equalsIgnoreCase(status)) {
             logMessage.add(CONTACT_ADMIN);
         }
         String message = logMessage.toString();
-        loggerDAO.updateLog(service, status, message.substring(1, message.length() - 1));
+        loggerDAO.updateLog(syncEventId, status, message.substring(1, message.length() - 1));
     }
 
     public void collateLogMessage(String message) {

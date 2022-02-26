@@ -43,7 +43,7 @@ public class SyncService {
         List<DhisSyncEvent> eventsToSync = eventDAO.getEventsToSync();
         for (DhisSyncEvent syncEvent : eventsToSync) {
             String comment = String.format("Encounter id :%s ", syncEvent.getEncounterId());
-            loggerService.addLog(syncEvent.getProgramId(), syncEvent.getUser(), comment);
+            loggerService.addLog(syncEvent.getId(), syncEvent.getProgramId(), syncEvent.getUser(), comment);
 
             try {
                 //TODO:get it as an object.
@@ -61,13 +61,13 @@ public class SyncService {
                         Collections.singletonList("uic"), new ArrayList<>());
 
                 programDataSyncService.syncProgramDetails(syncEvent, mappingJson);
-                loggerService.updateLog(syncEvent.getProgramId(), SUCCESS);
+                loggerService.updateLog(syncEvent.getId(), SUCCESS);
                 eventDAO.markEventAsSynced(syncEvent.getId());
             } catch (HttpServerErrorException e) {
-                loggerService.updateLog(syncEvent.getProgramId(), FAILED);
+                loggerService.updateLog(syncEvent.getId(), FAILED);
                 throw e;
             } catch (Exception e) {
-                loggerService.updateLog(syncEvent.getProgramId(), FAILED);
+                loggerService.updateLog(syncEvent.getId(), FAILED);
                 e.printStackTrace();
             }
         }

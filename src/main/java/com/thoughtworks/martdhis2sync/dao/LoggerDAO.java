@@ -23,9 +23,9 @@ public class LoggerDAO {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private static final String LOG_PREFIX = "LoggerDAO: ";
 
-    public void addLog(String service, String user, String comments) {
-        String sql = "INSERT INTO log (program, synced_by, comments, status, status_info, date_created) " +
-                "VALUES (:service, :user, :comments, 'pending', '', :dateCreated);";
+    public void addLog(Integer eventId, String service, String user, String comments) {
+        String sql = "INSERT INTO log (program, event_id, synced_by, comments, status, status_info, date_created) " +
+                "VALUES (:service, :eventId, :user, :comments, 'pending', '', :dateCreated);";
         String stringFromDate = getStringFromDate(new Date(), DATEFORMAT_WITH_24HR_TIME);
         Date dateFromString = getDateFromString(stringFromDate, DATEFORMAT_WITH_24HR_TIME);
 
@@ -33,6 +33,7 @@ public class LoggerDAO {
         parameterSource.addValue("service", service);
         parameterSource.addValue("user", user);
         parameterSource.addValue("comments", comments);
+        parameterSource.addValue("eventId", eventId);
         parameterSource.addValue("dateCreated", dateFromString);
 
         int update = parameterJdbcTemplate.update(sql, parameterSource);
@@ -44,21 +45,21 @@ public class LoggerDAO {
         }
     }
 
-    public void updateLog(String service, String status, String statusInfo) {
+    public void updateLog(Integer eventId, String status, String statusInfo) {
         String sql = "UPDATE log SET status = :status, status_info = :statusInfo " +
-                "WHERE program = :service AND status = 'pending';";
+                "WHERE event_id = :eventId AND status = 'pending';";
 
         MapSqlParameterSource parameterSource = new MapSqlParameterSource();
         parameterSource.addValue("status", status);
         parameterSource.addValue("statusInfo", statusInfo);
-        parameterSource.addValue("service", service);
+        parameterSource.addValue("eventId", eventId);
 
         int update = parameterJdbcTemplate.update(sql, parameterSource);
 
         if (update == 1) {
-            logger.info(LOG_PREFIX + String.format("Successfully updated status of the %s sync", service));
+            logger.info("{} Successfully updated status of the event : {}", LOG_PREFIX, eventId);
         } else {
-            logger.error(LOG_PREFIX + String.format("Failed updated status of the %s sync", service));
+            logger.info("{} Failed updated status of the event {}", LOG_PREFIX, eventId);
         }
     }
 }
