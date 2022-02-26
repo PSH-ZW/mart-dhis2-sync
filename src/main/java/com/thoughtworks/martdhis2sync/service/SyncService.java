@@ -42,9 +42,7 @@ public class SyncService {
 
         List<DhisSyncEvent> eventsToSync = eventDAO.getEventsToSync();
         for (DhisSyncEvent syncEvent : eventsToSync) {
-            String comment = String.format("Encounter id :%s ", syncEvent.getEncounterId());
-            loggerService.addLog(syncEvent.getId(), syncEvent.getProgramId(), syncEvent.getUser(), comment);
-
+            addSyncDetailsToLogComment(syncEvent);
             try {
                 //TODO:get it as an object.
                 Map<String, Object> mapping = mappingService.getMapping(syncEvent.getProgramId());
@@ -71,6 +69,12 @@ public class SyncService {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void addSyncDetailsToLogComment(DhisSyncEvent syncEvent) {
+        String patientId = teiService.getBahmniPatientIdentifier(syncEvent.getPatientId());
+        String comment = String.format("Patient Id: %s  Encounter id :%s ", patientId, syncEvent.getEncounterId());
+        loggerService.addLog(syncEvent.getId(), syncEvent.getProgramId(), syncEvent.getUser(), comment);
     }
 
     private void validatePatientsBeforeSync() {

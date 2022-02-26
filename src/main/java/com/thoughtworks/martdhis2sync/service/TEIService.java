@@ -285,5 +285,9 @@ public class TEIService {
             throw e;
         }
     }
+
+    public String getBahmniPatientIdentifier(String patientID) {
+        return patientDAO.getBahmniPatientIdentifier(patientID);
+    }
 }
 

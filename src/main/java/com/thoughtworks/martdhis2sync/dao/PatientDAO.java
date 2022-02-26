@@ -48,8 +48,17 @@ public class PatientDAO {
 
     public List<String> getUicForPatient(String patientId) {
         String sql = "select uic from patient where patient_id = %s";
-        List<String> uics =  jdbcTemplate.query(String.format(sql, patientId),
+        return jdbcTemplate.query(String.format(sql, patientId),
                 JdbcTemplateMapperFactory.newInstance().newRowMapper(String.class));
-        return uics;
+    }
+
+    public String getBahmniPatientIdentifier(String patientId) {
+        String sql = "select patient_identifier from patient where patient_id = %s";
+        List<String> patientIdentifiers = jdbcTemplate.query(String.format(sql, patientId),
+                JdbcTemplateMapperFactory.newInstance().newRowMapper(String.class));
+        if(!CollectionUtils.isEmpty(patientIdentifiers)) {
+            return patientIdentifiers.get(0);
+        }
+        return "";
     }
 }
