@@ -28,7 +28,6 @@ public class MappingDAO {
     private Resource searchableResource;
 
     public Map<String, Object> getMapping(String mapping) {
-        //TODO: Add a cache.
         String sql = String.format("SELECT lookup_table, mapping_json, config FROM mapping WHERE program_name ='%s'", mapping);
 
         return jdbcTemplate.queryForMap(sql);
