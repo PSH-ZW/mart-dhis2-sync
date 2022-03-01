@@ -11,8 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpServerErrorException;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -48,7 +46,6 @@ public class SyncService {
                 Map<String, Object> mapping = mappingService.getMapping(syncEvent.getProgramId());
                 Gson gson = new Gson();
                 MappingJson mappingJson = gson.fromJson(mapping.get("mapping_json").toString(), MappingJson.class);
-                //TODO:Use proper searchable and comparable
                 Config config = gson.fromJson(mapping.get("config").toString(), Config.class);
                 //TODO: clearing the global maps, we need to handle instance_tracking properly.
                 TEIUtil.resetPatientTEIUidMap();
@@ -56,7 +53,7 @@ public class SyncService {
                 //TODO: call this only if instanceId is not present in instance_tracker;
                 teiService.getTrackedEntityInstances(syncEvent.getPatientId());
                 teiService.triggerJob(syncEvent.getPatientId(), syncEvent.getUser(),
-                        Collections.singletonList("uic"), new ArrayList<>());
+                        config.getSearchable(), config.getComparable());
 
                 programDataSyncService.syncProgramDetails(syncEvent, mappingJson);
                 loggerService.updateLog(syncEvent.getId(), SUCCESS);
