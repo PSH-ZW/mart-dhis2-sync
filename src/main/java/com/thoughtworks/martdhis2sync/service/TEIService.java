@@ -8,6 +8,7 @@ import com.thoughtworks.martdhis2sync.model.*;
 import com.thoughtworks.martdhis2sync.repository.SyncRepository;
 import com.thoughtworks.martdhis2sync.step.TrackedEntityInstanceStep;
 import com.thoughtworks.martdhis2sync.util.BatchUtil;
+import com.thoughtworks.martdhis2sync.util.Constants;
 import com.thoughtworks.martdhis2sync.util.TEIUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -145,7 +146,7 @@ public class TEIService {
 
         StringBuilder uri = new StringBuilder();
         uri.append("&filter=");
-        uri.append("zRA08XEYiSF"); //TODO: uic hardcoded here, get it from mapping.
+        uri.append("zRA08XEYiSF"); //TODO: DHIS id of uic hardcoded here, get it from mapping.
         uri.append(":IN:");
 
         List<String> uicForPatient = patientDAO.getUicForPatient(patientId);
@@ -271,12 +272,11 @@ public class TEIService {
 
         try {
             LinkedList<Step> steps = new LinkedList<>();
-            //TODO: get this from cache if already present
-            Map<String, Object> mapping = mappingService.getMapping("Patient");
+            Map<String, Object> mapping = mappingService.getMapping(Constants.PATIENT_MAPPING_NAME);
             Gson gson = new Gson();
             MappingJson mappingJson = gson.fromJson(mapping.get("mapping_json").toString(), MappingJson.class);
-            //TODO: add constants for patient table name.
-            Map<String, Map<String, String>> patientMappingWithElementNames = mappingJson.getFormTableMappings().get("patient");
+            Map<String, Map<String, String>> patientMappingWithElementNames =
+                    mappingJson.getFormTableMappings().get(Constants.PATIENT_TABLE_NAME);
             Map<String, String> patientMapping = BatchUtil.getColumnNameToDhisElementIdMap(patientMappingWithElementNames);
             steps.add(trackedEntityInstanceStep.get(patientId, patientMapping, searchableAttributes, comparableAttributes));
             jobService.triggerJob(user, TEI_JOB_NAME, steps, "");

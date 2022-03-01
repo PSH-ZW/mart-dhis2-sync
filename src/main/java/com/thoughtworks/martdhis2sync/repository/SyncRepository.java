@@ -98,7 +98,7 @@ public class SyncRepository {
     }
 
     public ResponseEntity<TrackedEntityInstanceResponse> getTrackedEntityInstances(String uri) {
-        ResponseEntity<TrackedEntityInstanceResponse> responseEntity = null;
+        ResponseEntity<TrackedEntityInstanceResponse> responseEntity;
         try {
             logger.info("Tracked Entity Request URI---> "+ uri);
 
