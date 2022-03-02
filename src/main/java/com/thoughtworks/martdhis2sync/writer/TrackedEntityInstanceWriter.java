@@ -5,7 +5,9 @@ import com.thoughtworks.martdhis2sync.model.DHISSyncResponse;
 import com.thoughtworks.martdhis2sync.model.ImportSummary;
 import com.thoughtworks.martdhis2sync.repository.SyncRepository;
 import com.thoughtworks.martdhis2sync.service.LoggerService;
+import com.thoughtworks.martdhis2sync.service.MappingService;
 import com.thoughtworks.martdhis2sync.util.BatchUtil;
+import com.thoughtworks.martdhis2sync.util.Constants;
 import com.thoughtworks.martdhis2sync.util.MarkerUtil;
 import com.thoughtworks.martdhis2sync.util.TEIUtil;
 import org.slf4j.Logger;
@@ -51,6 +53,9 @@ public class TrackedEntityInstanceWriter implements ItemWriter {
 
     @Autowired
     private SyncRepository syncRepository;
+
+    @Autowired
+    private MappingService mappingService;
 
     @Autowired
     private MarkerUtil markerUtil;
@@ -100,8 +105,18 @@ public class TrackedEntityInstanceWriter implements ItemWriter {
         for (ImportSummary importSummary : importSummaries) {
             if (isConflicted(importSummary)) {
                 importSummary.getConflicts().forEach(conflict -> {
-                    logger.error(LOG_PREFIX + conflict.getObject() + ": " + conflict.getValue());
-                    loggerService.collateLogMessage(String.format("%s: %s", conflict.getObject(), conflict.getValue()));
+                    String conflictType = conflict.getObject();
+                    String errorMessage = conflict.getValue();
+                    if(conflictType.equals(Constants.ATTRIBUTE_DATATYPE_MISMATCH)) {
+                        String elementId = errorMessage.substring(errorMessage.length() - Constants.DHIS_UID_LENGTH);
+                        String elementName = mappingService.getElementWithId(elementId);
+                        logger.error("{} {} : {}",LOG_PREFIX, elementName, errorMessage);
+                        loggerService.collateLogMessage(String.format("%s: %s", errorMessage.substring(0, errorMessage.length() - Constants.DHIS_UID_LENGTH), elementName));
+                    }
+                    else {
+                        logger.error("{} {} : {}",LOG_PREFIX, conflictType, errorMessage);
+                        loggerService.collateLogMessage(String.format("%s: %s", conflictType, errorMessage));
+                    }
                 });
                 if (mapIterator.hasNext()) {
                     mapIterator.next();
