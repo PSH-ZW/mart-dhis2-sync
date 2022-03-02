@@ -3,7 +3,6 @@ package com.thoughtworks.martdhis2sync.service;
 import com.thoughtworks.martdhis2sync.model.DhisSyncEvent;
 import com.thoughtworks.martdhis2sync.model.MappingJson;
 import com.thoughtworks.martdhis2sync.step.ProgramDataSyncStep;
-import com.thoughtworks.martdhis2sync.step.StepFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.JobParametersInvalidException;
@@ -21,15 +20,11 @@ import java.util.LinkedList;
 public class ProgramDataSyncService {
     private static final String LOG_PREFIX = "Completed Enrollments: ";
     private static final String JOB_NEW_COMPLETED_ENROLLMENTS = "New Completed Enrollments";
-    private static final String JOB_UPDATED_COMPLETED_ENROLLMENTS = "Updated Completed Enrollments";
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private ProgramDataSyncStep step;
-
-    @Autowired
-    private StepFactory stepFactory;
 
     @Autowired
     private JobService jobService;

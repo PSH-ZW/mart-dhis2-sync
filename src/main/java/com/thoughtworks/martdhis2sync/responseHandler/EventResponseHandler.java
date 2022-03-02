@@ -3,6 +3,7 @@ package com.thoughtworks.martdhis2sync.responseHandler;
 import com.thoughtworks.martdhis2sync.model.*;
 import com.thoughtworks.martdhis2sync.service.JobService;
 import com.thoughtworks.martdhis2sync.service.LoggerService;
+import com.thoughtworks.martdhis2sync.service.MappingService;
 import com.thoughtworks.martdhis2sync.trackerHandler.TrackersHandler;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,9 @@ public class EventResponseHandler {
 
     @Autowired
     private LoggerService loggerService;
+
+    @Autowired
+    private MappingService mappingService;
 
     @Autowired
     private TrackersHandler trackersHandler;
@@ -65,8 +69,10 @@ public class EventResponseHandler {
                 loggerService.collateLogMessage(String.format("%s", importSummary.getDescription()));
             } else if (isConflicted(importSummary)) {
                 importSummary.getConflicts().forEach(conflict -> {
-                    logger.error(logPrefix + conflict.getObject() + ": " + conflict.getValue());
-                    loggerService.collateLogMessage(String.format("%s: %s", conflict.getObject(), conflict.getValue()));
+                    String elementId = conflict.getObject();
+                    String elementName = mappingService.getElementWithId(elementId);
+                    logger.error("{} {} : {}",logPrefix, elementName, conflict.getValue());
+                    loggerService.collateLogMessage(String.format("%s: %s", elementName, conflict.getValue()));
                 });
                 if(isImported(importSummary)) {
                     processImportSummaries(Collections.singletonList(importSummary), eventTrackerIterator);

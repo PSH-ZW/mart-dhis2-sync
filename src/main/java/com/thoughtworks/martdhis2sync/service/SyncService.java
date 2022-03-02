@@ -1,9 +1,9 @@
 package com.thoughtworks.martdhis2sync.service;
 
-import com.google.gson.Gson;
 import com.thoughtworks.martdhis2sync.dao.EventDAO;
 import com.thoughtworks.martdhis2sync.model.Config;
 import com.thoughtworks.martdhis2sync.model.DhisSyncEvent;
+import com.thoughtworks.martdhis2sync.model.Mapping;
 import com.thoughtworks.martdhis2sync.model.MappingJson;
 import com.thoughtworks.martdhis2sync.util.TEIUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,10 +43,9 @@ public class SyncService {
             addSyncDetailsToLogComment(syncEvent);
             try {
                 //TODO:get it as an object.
-                Map<String, Object> mapping = mappingService.getMapping(syncEvent.getProgramId());
-                Gson gson = new Gson();
-                MappingJson mappingJson = gson.fromJson(mapping.get("mapping_json").toString(), MappingJson.class);
-                Config config = gson.fromJson(mapping.get("config").toString(), Config.class);
+                Mapping mapping = mappingService.getMapping(syncEvent.getProgramId());
+                MappingJson mappingJson = mapping.getMappingJson();
+                Config config = mapping.getConfig();
                 //TODO: clearing the global maps, we need to handle instance_tracking properly.
                 TEIUtil.resetPatientTEIUidMap();
                 TEIUtil.resetTrackedEntityInstaceIDs();

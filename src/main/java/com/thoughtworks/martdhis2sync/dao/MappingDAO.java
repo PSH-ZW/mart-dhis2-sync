@@ -27,8 +27,9 @@ public class MappingDAO {
     @Value("classpath:sql/Searchable.sql")
     private Resource searchableResource;
 
-    public Map<String, Object> getMapping(String mapping) {
-        String sql = String.format("SELECT lookup_table, mapping_json, config FROM mapping WHERE program_name ='%s'", mapping);
+    public Map<String, Object> getMapping(String programName) {
+        //adding double quotes to preserve case.
+        String sql = String.format("SELECT mapping_json as \"mappingJson\", config FROM mapping WHERE program_name ='%s'", programName);
 
         return jdbcTemplate.queryForMap(sql);
     }

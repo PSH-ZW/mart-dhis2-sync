@@ -272,9 +272,8 @@ public class TEIService {
 
         try {
             LinkedList<Step> steps = new LinkedList<>();
-            Map<String, Object> mapping = mappingService.getMapping(Constants.PATIENT_MAPPING_NAME);
-            Gson gson = new Gson();
-            MappingJson mappingJson = gson.fromJson(mapping.get("mapping_json").toString(), MappingJson.class);
+            Mapping mapping = mappingService.getMapping(Constants.PATIENT_MAPPING_NAME);
+            MappingJson mappingJson = mapping.getMappingJson();
             Map<String, Map<String, String>> patientMappingWithElementNames =
                     mappingJson.getFormTableMappings().get(Constants.PATIENT_TABLE_NAME);
             Map<String, String> patientMapping = BatchUtil.getColumnNameToDhisElementIdMap(patientMappingWithElementNames);
