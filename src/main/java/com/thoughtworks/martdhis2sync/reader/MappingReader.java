@@ -28,12 +28,6 @@ public class MappingReader {
     @Value("classpath:sql/InstanceReader.sql")
     private Resource instanceResource;
 
-    @Value("classpath:sql/NewCompletedEnrollmentWithEvents.sql")
-    private Resource newCompletedEnrWithEventsResource;
-
-    @Value("classpath:sql/NewActiveEnrollmentWithEvents.sql")
-    private Resource newActiveEnrWithEventsResource;
-
     @Value("classpath:sql/EnrollmentWithEvents.sql")
     private Resource enrollmentWithEvents;
 
@@ -52,7 +46,7 @@ public class MappingReader {
         try {
             sql = BatchUtil.convertResourceOutputToString(resource);
         } catch (IOException e) {
-            logger.error("Error in converting sql to string : " + e.getMessage());
+            logger.error("Error in converting sql to string : {}", e.getMessage());
         }
 
         return sql;
@@ -68,13 +62,6 @@ public class MappingReader {
         return get(sql);
     }
 
-    public JdbcCursorItemReader<Map<String, Object>> getNewCompletedEnrollmentWithEventsReader(
-            String enrollmentLookupTable, String programName, String eventLookupTable) {
-        String sql = String.format(getSql(newCompletedEnrWithEventsResource), enrollmentLookupTable,
-                                            eventLookupTable, programName);
-        return get(sql);
-    }
-
     public JdbcCursorItemReader<Map<String, Object>> getEnrollmentAndEventReader(String encounterId, MappingJson mappingJson) {
         StringBuilder leftJoins = new StringBuilder();
         for(String tableName : mappingJson.getFormTableMappings().keySet()) {
@@ -83,14 +70,6 @@ public class MappingReader {
             }
         }
         String sql = String.format(getSql(enrollmentWithEvents), leftJoins, encounterId, mappingJson.getDhisProgramStageId().getId());
-        return get(sql);
-    }
-
-    public JdbcCursorItemReader<Map<String, Object>> getNewActiveEnrollmentWithEventsReader(
-            String enrollmentLookupTable, String programName, String eventLookupTable) {
-
-        String sql = String.format(getSql(newActiveEnrWithEventsResource), enrollmentLookupTable,
-                eventLookupTable, programName);
         return get(sql);
     }
 
