@@ -15,8 +15,6 @@ public class LoggerService {
 
     public static final String CONTACT_ADMIN = "Please contact Admin team.";
 
-    public static final String NO_DELTA_DATA = "No delta data to sync.";
-
     public static final String SUCCESS = "success";
 
     public static final String FAILED = "failed";

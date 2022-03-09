@@ -53,25 +53,6 @@ public class EnrollmentResponseHandler {
         }
     }
 
-    public void processCompletedSecondStepResponse(List<EnrollmentImportSummary> importSummaries, Iterator<EnrollmentAPIPayLoad> payLoadIterator, Logger logger, String logPrefix) {
-        for (EnrollmentImportSummary importSummary : importSummaries) {
-            if (isIgnored(importSummary)) {
-                EnrollmentAPIPayLoad payLoad = payLoadIterator.next();
-                payLoad.setStatus(EnrollmentAPIPayLoad.STATUS_ACTIVE);
-                logger.error(logPrefix + importSummary.getDescription());
-                loggerService.collateLogMessage(String.format("%s", importSummary.getDescription()));
-            } else if (isConflicted(importSummary)) {
-                EnrollmentAPIPayLoad payLoad = payLoadIterator.next();
-                payLoad.setStatus(EnrollmentAPIPayLoad.STATUS_ACTIVE);
-                importSummary.getConflicts().forEach(conflict -> {
-                    logger.error(logPrefix + conflict.getObject() + ": " + conflict.getValue());
-                    loggerService.collateLogMessage(String.format("%s: %s", conflict.getObject(), conflict.getValue()));
-                });
-            } else {
-                payLoadIterator.next();
-            }
-        }
-    }
 
     private boolean isIgnored(EnrollmentImportSummary importSummary) {
         return IMPORT_SUMMARY_RESPONSE_ERROR.equals(importSummary.getStatus()) && importSummary.getImportCount().getIgnored() == 1

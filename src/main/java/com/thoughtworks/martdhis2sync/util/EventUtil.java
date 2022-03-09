@@ -8,11 +8,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.StringUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static com.thoughtworks.martdhis2sync.util.BatchUtil.*;
 
@@ -37,39 +35,6 @@ public class EventUtil {
     public static List<EventTracker> eventsToSaveInTracker = new ArrayList<>();
 
     private static Logger logger = LoggerFactory.getLogger(EventUtil.class.getName());
-
-    public static void addExistingEventTracker(JsonObject tableRow) {
-        existingEventTrackers.add(getEventTracker(tableRow));
-    }
-
-    public static void addNewEventTracker(JsonObject tableRow) {
-        newEventTrackers.add(getEventTracker(tableRow));
-    }
-
-    private static EventTracker getEventTracker(JsonObject tableRow) {
-        JsonElement eventIdElement = tableRow.get("event_id");
-        String eventId = hasValue(eventIdElement) ? getUnquotedString(eventIdElement.toString()) : "";
-
-        return new EventTracker(
-                eventId,
-                getUnquotedString(tableRow.get("instance_id").toString()),
-                getUnquotedString(tableRow.get("program").toString()),
-                getUnquotedString(tableRow.get("event_unique_id").toString()),
-                getUnquotedString(tableRow.get("program_stage").toString()),
-                tableRow.get("encounter_id").getAsInt()
-        );
-    }
-
-    public static List<EventTracker> getEventTrackers() {
-        return Stream.of(newEventTrackers, existingEventTrackers)
-                .flatMap(List:: stream)
-                .collect(Collectors.toList());
-    }
-
-    public static void resetEventTrackersList() {
-        existingEventTrackers.clear();
-        newEventTrackers.clear();
-    }
 
     public static List<EventTracker> getEventTrackers(List<Event> events) {
         return events.stream().map(event -> new EventTracker(
@@ -128,22 +93,5 @@ public class EventUtil {
         }
 
         return value;
-    }
-
-    public static List<Event> placeNewEventsFirst(List<Event> events) {
-        List<Event> newEvents = new LinkedList<>();
-        List<Event> updateEvents = new LinkedList<>();
-
-        events.forEach(event -> {
-            if (StringUtils.isEmpty(event.getEvent())) {
-                newEvents.add(event);
-            } else {
-                updateEvents.add(event);
-            }
-        });
-
-        return Stream.of(newEvents, updateEvents)
-                .flatMap(List:: stream)
-                .collect(Collectors.toList());
     }
 }

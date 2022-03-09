@@ -2,7 +2,6 @@ package com.thoughtworks.martdhis2sync.step;
 
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
-import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
@@ -30,9 +29,4 @@ public class StepFactory {
                 .build();
     }
 
-    protected Step build(String stepName, Tasklet tasklet) {
-        return stepBuilderFactory.get(stepName)
-                .tasklet(tasklet)
-                .build();
-    }
 }
