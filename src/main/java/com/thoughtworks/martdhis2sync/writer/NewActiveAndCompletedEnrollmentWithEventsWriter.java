@@ -1,6 +1,5 @@
 package com.thoughtworks.martdhis2sync.writer;
 
-import com.thoughtworks.martdhis2sync.controller.PushController;
 import com.thoughtworks.martdhis2sync.model.*;
 import com.thoughtworks.martdhis2sync.repository.SyncRepository;
 import com.thoughtworks.martdhis2sync.responseHandler.EnrollmentResponseHandler;
@@ -73,7 +72,6 @@ public class NewActiveAndCompletedEnrollmentWithEventsWriter implements ItemWrit
 
     @Override
     public void write(List<? extends ProcessedTableRow> tableRows) throws Exception {
-        PushController.IS_DELTA_EXISTS = true;
         eventTrackers.clear();
         Map<String, EnrollmentAPIPayLoad> groupedEnrollmentPayLoad = getGroupedEnrollmentPayLoad(tableRows);
         Collection<EnrollmentAPIPayLoad> payLoads = groupedEnrollmentPayLoad.values();
