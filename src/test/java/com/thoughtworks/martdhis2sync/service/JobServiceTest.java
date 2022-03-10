@@ -7,11 +7,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.springframework.batch.core.BatchStatus;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.JobParameters;
-import org.springframework.batch.core.Step;
+import org.springframework.batch.core.*;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.job.builder.FlowJobBuilder;
 import org.springframework.batch.core.job.builder.JobBuilder;
@@ -23,7 +19,6 @@ import java.io.SyncFailedException;
 import java.util.Collections;
 import java.util.LinkedList;
 
-import static com.thoughtworks.martdhis2sync.CommonTestHelper.setValuesForMemberFields;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -80,10 +75,10 @@ public class JobServiceTest {
     @Before
     public void setUp() throws Exception {
         jobService = new JobService();
-        setValuesForMemberFields(jobService, "jobLauncher", jobLauncher);
-        setValuesForMemberFields(jobService, "listener", listener);
-        setValuesForMemberFields(jobService, "jobBuilderFactory", jobBuilderFactory);
-        setValuesForMemberFields(jobService, "loggerService", loggerService);
+//        setValuesForMemberFields(jobService, "jobLauncher", jobLauncher);
+//        setValuesForMemberFields(jobService, "listener", listener);
+//        setValuesForMemberFields(jobService, "jobBuilderFactory", jobBuilderFactory);
+//        setValuesForMemberFields(jobService, "loggerService", loggerService);
         steps.add(step1);
     }
 

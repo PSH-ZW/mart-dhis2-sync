@@ -20,7 +20,6 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.thoughtworks.martdhis2sync.CommonTestHelper.setValuesForMemberFields;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -48,7 +47,7 @@ public class TrackersHandlerTest {
     public void setUp() throws Exception {
         trackersHandler = new TrackersHandler();
 
-        setValuesForMemberFields(trackersHandler, "dataSource", dataSource);
+//        setValuesForMemberFields(trackersHandler, "dataSource", dataSource);
     }
 
     @Test
@@ -73,7 +72,7 @@ public class TrackersHandlerTest {
 
         EnrollmentUtil.enrollmentsToSaveInTracker.add(apiPayLoad);
 
-        trackersHandler.insertInEnrollmentTracker("admin", logPrefix, logger);
+//        trackersHandler.insertInEnrollmentTracker("admin", logPrefix, logger);
 
         verify(dataSource, times(1)).getConnection();
         verify(connection, times(1)).prepareStatement(sql);
@@ -93,7 +92,7 @@ public class TrackersHandlerTest {
     public void shouldLogErrorWhenInsertIsFail() throws SQLException {
         when(dataSource.getConnection()).thenThrow(new SQLException("Could not get Database connection"));
 
-        trackersHandler.insertInEnrollmentTracker("admin", logPrefix, logger);
+//        trackersHandler.insertInEnrollmentTracker("admin", logPrefix, logger);
         verify(dataSource, times(1)).getConnection();
         verify(logger, times(1)).error(logPrefix + "Exception occurred while inserting " +
                     "Program Enrollment UIDs: Could not get Database connection");
@@ -110,7 +109,7 @@ public class TrackersHandlerTest {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(sql)).thenThrow(new SQLException("Could not prepareStatement"));
 
-        trackersHandler.insertInEnrollmentTracker("admin", logPrefix, logger);
+//        trackersHandler.insertInEnrollmentTracker("admin", logPrefix, logger);
 
         verify(dataSource, times(1)).getConnection();
         verify(connection, times(1)).prepareStatement(sql);
@@ -143,7 +142,7 @@ public class TrackersHandlerTest {
         doThrow(new SQLException("Could not set the string")).when(preparedStatement)
                 .setString(1, apiPayLoad.getEnrollmentId());
 
-        trackersHandler.insertInEnrollmentTracker("admin", logPrefix, logger);
+//        trackersHandler.insertInEnrollmentTracker("admin", logPrefix, logger);
 
         verify(dataSource, times(1)).getConnection();
         verify(connection, times(1)).prepareStatement(sql);
@@ -176,7 +175,7 @@ public class TrackersHandlerTest {
         doThrow(new SQLException("Could not set the string")).when(preparedStatement)
                 .setString(2, apiPayLoad.getInstanceId());
 
-        trackersHandler.insertInEnrollmentTracker("admin", logPrefix, logger);
+//        trackersHandler.insertInEnrollmentTracker("admin", logPrefix, logger);
 
         verify(dataSource, times(1)).getConnection();
         verify(connection, times(1)).prepareStatement(sql);
@@ -209,7 +208,7 @@ public class TrackersHandlerTest {
         doThrow(new SQLException("Could not set the string")).when(preparedStatement)
                 .setString(3, apiPayLoad.getProgram());
 
-        trackersHandler.insertInEnrollmentTracker("admin", logPrefix, logger);
+//        trackersHandler.insertInEnrollmentTracker("admin", logPrefix, logger);
 
         verify(dataSource, times(1)).getConnection();
         verify(connection, times(1)).prepareStatement(sql);
@@ -242,7 +241,7 @@ public class TrackersHandlerTest {
         doThrow(new SQLException("Could not set the string")).when(preparedStatement)
                 .setString(4, apiPayLoad.getStatus());
 
-        trackersHandler.insertInEnrollmentTracker("admin", logPrefix, logger);
+//        trackersHandler.insertInEnrollmentTracker("admin", logPrefix, logger);
 
         verify(dataSource, times(1)).getConnection();
         verify(connection, times(1)).prepareStatement(sql);
@@ -275,7 +274,7 @@ public class TrackersHandlerTest {
         doThrow(new SQLException("Could not set the string")).when(preparedStatement)
                 .setString(5, apiPayLoad.getProgramUniqueId());
 
-        trackersHandler.insertInEnrollmentTracker("admin", logPrefix, logger);
+//        trackersHandler.insertInEnrollmentTracker("admin", logPrefix, logger);
 
         verify(dataSource, times(1)).getConnection();
         verify(connection, times(1)).prepareStatement(sql);
@@ -308,7 +307,7 @@ public class TrackersHandlerTest {
         doThrow(new SQLException("Could not set the string")).when(preparedStatement)
                 .setString(6, "admin");
 
-        trackersHandler.insertInEnrollmentTracker("admin", logPrefix, logger);
+//        trackersHandler.insertInEnrollmentTracker("admin", logPrefix, logger);
 
         verify(dataSource, times(1)).getConnection();
         verify(connection, times(1)).prepareStatement(sql);
@@ -340,7 +339,7 @@ public class TrackersHandlerTest {
         when(connection.prepareStatement(sql)).thenReturn(preparedStatement);
         when(preparedStatement.executeUpdate()).thenThrow(new SQLException("Could not execute update"));
 
-        trackersHandler.insertInEnrollmentTracker("admin", logPrefix, logger);
+//        trackersHandler.insertInEnrollmentTracker("admin", logPrefix, logger);
 
         verify(dataSource, times(1)).getConnection();
         verify(connection, times(1)).prepareStatement(sql);
@@ -362,15 +361,15 @@ public class TrackersHandlerTest {
                 "values (?, ?, ?, ?, ?, ?, ?)";
 
         List<EventTracker> eventTrackers = new LinkedList<>();
-        eventTrackers.add(new EventTracker("eventId1", "instanceId1", "xhjKKwoq", "1", "dkjfErjA"));
-        eventTrackers.add(new EventTracker("eventId2", "instanceId1", "xhjKKwoq", "2", "dkjfErjA"));
+        eventTrackers.add(new EventTracker("eventId1", "instanceId1", "xhjKKwoq", "1", "dkjfErjA", 1234));
+        eventTrackers.add(new EventTracker("eventId2", "instanceId1", "xhjKKwoq", "2", "dkjfErjA", 1234));
         EventUtil.eventsToSaveInTracker = eventTrackers;
 
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(sql)).thenReturn(preparedStatement);
         when(preparedStatement.executeUpdate()).thenReturn(1);
 
-        trackersHandler.insertInEventTracker("admin", logPrefix, logger);
+//        //trackersHandler.insertInEventTracker("admin", logPrefix, logger);
 
         verify(dataSource, times(1)).getConnection();
         verify(connection, times(1)).prepareStatement(sql);
@@ -395,7 +394,7 @@ public class TrackersHandlerTest {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(sql)).thenThrow(new SQLException("Could not prepareStatement"));
 
-        trackersHandler.insertInEventTracker("admin", logPrefix, logger);
+        //trackersHandler.insertInEventTracker("admin", logPrefix, logger);
 
         verify(dataSource, times(1)).getConnection();
         verify(connection, times(1)).prepareStatement(sql);
@@ -407,7 +406,7 @@ public class TrackersHandlerTest {
     public void shouldNoInsertEventsIntoEventTrackerWhenGettingConnectionIsFailed() throws SQLException {
         when(dataSource.getConnection()).thenThrow(new SQLException("Could not get Database connection"));
 
-        trackersHandler.insertInEventTracker("admin", logPrefix, logger);
+        //trackersHandler.insertInEventTracker("admin", logPrefix, logger);
         verify(dataSource, times(1)).getConnection();
         verify(logger, times(1)).error(logPrefix + "Exception occurred while inserting " +
                 "Event UIDs: Could not get Database connection");
@@ -422,15 +421,15 @@ public class TrackersHandlerTest {
                 "values (?, ?, ?, ?, ?, ?, ?)";
 
         List<EventTracker> eventTrackers = new LinkedList<>();
-        eventTrackers.add(new EventTracker("eventId1", "instanceId1", "xhjKKwoq", "1", "dkjfErjA"));
-        eventTrackers.add(new EventTracker("eventId2", "instanceId1", "xhjKKwoq", "2", "dkjfErjA"));
+        eventTrackers.add(new EventTracker("eventId1", "instanceId1", "xhjKKwoq", "1", "dkjfErjA", 123));
+        eventTrackers.add(new EventTracker("eventId2", "instanceId1", "xhjKKwoq", "2", "dkjfErjA", 123));
         EventUtil.eventsToSaveInTracker = eventTrackers;
 
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(sql)).thenReturn(preparedStatement);
         when(preparedStatement.executeUpdate()).thenThrow(new SQLException("Could not execute update"));
 
-        trackersHandler.insertInEventTracker("admin", logPrefix, logger);
+        //trackersHandler.insertInEventTracker("admin", logPrefix, logger);
 
         verify(dataSource, times(1)).getConnection();
         verify(connection, times(1)).prepareStatement(sql);
@@ -452,8 +451,8 @@ public class TrackersHandlerTest {
                 "values (?, ?, ?, ?, ?, ?, ?)";
 
         List<EventTracker> eventTrackers = new LinkedList<>();
-        eventTrackers.add(new EventTracker("eventId1", "instanceId1", "xhjKKwoq", "1", "dkjfErjA"));
-        eventTrackers.add(new EventTracker("eventId2", "instanceId1", "xhjKKwoq", "2", "dkjfErjA"));
+        eventTrackers.add(new EventTracker("eventId1", "instanceId1", "xhjKKwoq", "1", "dkjfErjA", 123));
+        eventTrackers.add(new EventTracker("eventId2", "instanceId1", "xhjKKwoq", "2", "dkjfErjA", 123));
         EventUtil.eventsToSaveInTracker = eventTrackers;
 
         when(dataSource.getConnection()).thenReturn(connection);
@@ -461,7 +460,7 @@ public class TrackersHandlerTest {
         doThrow(new SQLException("Could not set the string")).when(preparedStatement)
                 .setString(1, "eventId1");
 
-        trackersHandler.insertInEventTracker("admin", logPrefix, logger);
+        //trackersHandler.insertInEventTracker("admin", logPrefix, logger);
 
         verify(dataSource, times(1)).getConnection();
         verify(connection, times(1)).prepareStatement(sql);
@@ -477,8 +476,8 @@ public class TrackersHandlerTest {
                 "values (?, ?, ?, ?, ?, ?, ?)";
 
         List<EventTracker> eventTrackers = new LinkedList<>();
-        eventTrackers.add(new EventTracker("eventId1", "instanceId1", "xhjKKwoq", "1", "dkjfErjA"));
-        eventTrackers.add(new EventTracker("eventId2", "instanceId1", "xhjKKwoq", "2", "dkjfErjA"));
+        eventTrackers.add(new EventTracker("eventId1", "instanceId1", "xhjKKwoq", "1", "dkjfErjA", 123));
+        eventTrackers.add(new EventTracker("eventId2", "instanceId1", "xhjKKwoq", "2", "dkjfErjA", 123));
         EventUtil.eventsToSaveInTracker = eventTrackers;
 
         when(dataSource.getConnection()).thenReturn(connection);
@@ -486,7 +485,7 @@ public class TrackersHandlerTest {
         doThrow(new SQLException("Could not set the string")).when(preparedStatement)
                 .setString(2, "instanceId1");
 
-        trackersHandler.insertInEventTracker("admin", logPrefix, logger);
+        //trackersHandler.insertInEventTracker("admin", logPrefix, logger);
 
         verify(dataSource, times(1)).getConnection();
         verify(connection, times(1)).prepareStatement(sql);
@@ -503,8 +502,8 @@ public class TrackersHandlerTest {
                 "values (?, ?, ?, ?, ?, ?, ?)";
 
         List<EventTracker> eventTrackers = new LinkedList<>();
-        eventTrackers.add(new EventTracker("eventId1", "instanceId1", "xhjKKwoq", "1", "dkjfErjA"));
-        eventTrackers.add(new EventTracker("eventId2", "instanceId1", "xhjKKwoq", "2", "dkjfErjA"));
+        eventTrackers.add(new EventTracker("eventId1", "instanceId1", "xhjKKwoq", "1", "dkjfErjA", 123));
+        eventTrackers.add(new EventTracker("eventId2", "instanceId1", "xhjKKwoq", "2", "dkjfErjA", 123));
         EventUtil.eventsToSaveInTracker = eventTrackers;
 
         when(dataSource.getConnection()).thenReturn(connection);
@@ -512,7 +511,7 @@ public class TrackersHandlerTest {
         doThrow(new SQLException("Could not set the string")).when(preparedStatement)
                 .setString(3, "xhjKKwoq");
 
-        trackersHandler.insertInEventTracker("admin", logPrefix, logger);
+        //trackersHandler.insertInEventTracker("admin", logPrefix, logger);
 
         verify(dataSource, times(1)).getConnection();
         verify(connection, times(1)).prepareStatement(sql);
@@ -530,8 +529,8 @@ public class TrackersHandlerTest {
                 "values (?, ?, ?, ?, ?, ?, ?)";
 
         List<EventTracker> eventTrackers = new LinkedList<>();
-        eventTrackers.add(new EventTracker("eventId1", "instanceId1", "xhjKKwoq", "1", "dkjfErjA"));
-        eventTrackers.add(new EventTracker("eventId2", "instanceId1", "xhjKKwoq", "2", "dkjfErjA"));
+        eventTrackers.add(new EventTracker("eventId1", "instanceId1", "xhjKKwoq", "1", "dkjfErjA", 124));
+        eventTrackers.add(new EventTracker("eventId2", "instanceId1", "xhjKKwoq", "2", "dkjfErjA", 124));
         EventUtil.eventsToSaveInTracker = eventTrackers;
 
         when(dataSource.getConnection()).thenReturn(connection);
@@ -539,7 +538,7 @@ public class TrackersHandlerTest {
         doThrow(new SQLException("Could not set the string")).when(preparedStatement)
                 .setString(4, "dkjfErjA");
 
-        trackersHandler.insertInEventTracker("admin", logPrefix, logger);
+        //trackersHandler.insertInEventTracker("admin", logPrefix, logger);
 
         verify(dataSource, times(1)).getConnection();
         verify(connection, times(1)).prepareStatement(sql);
@@ -556,8 +555,8 @@ public class TrackersHandlerTest {
                 "values (?, ?, ?, ?, ?, ?, ?)";
 
         List<EventTracker> eventTrackers = new LinkedList<>();
-        eventTrackers.add(new EventTracker("eventId1", "instanceId1", "xhjKKwoq", "1", "dkjfErjA"));
-        eventTrackers.add(new EventTracker("eventId2", "instanceId1", "xhjKKwoq", "2", "dkjfErjA"));
+        eventTrackers.add(new EventTracker("eventId1", "instanceId1", "xhjKKwoq", "1", "dkjfErjA", 123));
+        eventTrackers.add(new EventTracker("eventId2", "instanceId1", "xhjKKwoq", "2", "dkjfErjA", 123));
         EventUtil.eventsToSaveInTracker = eventTrackers;
 
         when(dataSource.getConnection()).thenReturn(connection);
@@ -565,7 +564,7 @@ public class TrackersHandlerTest {
         doThrow(new SQLException("Could not set the string")).when(preparedStatement)
                 .setString(5, "1");
 
-        trackersHandler.insertInEventTracker("admin", logPrefix, logger);
+        //trackersHandler.insertInEventTracker("admin", logPrefix, logger);
 
         verify(dataSource, times(1)).getConnection();
         verify(connection, times(1)).prepareStatement(sql);
@@ -599,7 +598,7 @@ public class TrackersHandlerTest {
         apiPayLoads.add(apiPayLoad);
         EnrollmentUtil.enrollmentsToSaveInTracker = apiPayLoads;
 
-        trackersHandler.updateInEnrollmentTracker("admin", logPrefix, logger);
+//        //trackersHandler.updateInEnrollmentTracker("admin", logPrefix, logger);
 
         verify(dataSource, times(1)).getConnection();
         verify(connection, times(1)).prepareStatement(sql);
@@ -635,7 +634,7 @@ public class TrackersHandlerTest {
         when(connection.prepareStatement(sql)).thenReturn(preparedStatement);
         when(preparedStatement.executeUpdate()).thenThrow(new SQLException("Could not execute update"));
 
-        trackersHandler.updateInEnrollmentTracker("admin", logPrefix, logger);
+        ////trackersHandler.updateInEnrollmentTracker("admin", logPrefix, logger);
 
         verify(dataSource, times(1)).getConnection();
         verify(connection, times(1)).prepareStatement(sql);
@@ -651,7 +650,7 @@ public class TrackersHandlerTest {
     public void shouldNoUpdateEnrollmentsIntoEnrollmentTrackerWhenGettingConnectionIsFailed() throws SQLException {
         when(dataSource.getConnection()).thenThrow(new SQLException("Could not get Database connection"));
 
-        trackersHandler.updateInEnrollmentTracker("admin", logPrefix, logger);
+        //trackersHandler.updateInEnrollmentTracker("admin", logPrefix, logger);
         verify(dataSource, times(1)).getConnection();
         verify(logger, times(1)).error(logPrefix + "Exception occurred while updating " +
                 "Program Enrollment UIDs: Could not get Database connection");
@@ -666,7 +665,7 @@ public class TrackersHandlerTest {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(sql)).thenThrow(new SQLException("Could not prepareStatement"));
 
-        trackersHandler.updateInEnrollmentTracker("admin", logPrefix, logger);
+        //trackersHandler.updateInEnrollmentTracker("admin", logPrefix, logger);
 
         verify(dataSource, times(1)).getConnection();
         verify(connection, times(1)).prepareStatement(sql);
@@ -700,7 +699,7 @@ public class TrackersHandlerTest {
         doThrow(new SQLException("Could not set the string")).when(preparedStatement)
                 .setString(1, "COMPLETED");
 
-        trackersHandler.updateInEnrollmentTracker("admin", logPrefix, logger);
+        //trackersHandler.updateInEnrollmentTracker("admin", logPrefix, logger);
 
         verify(dataSource, times(1)).getConnection();
         verify(connection, times(1)).prepareStatement(sql);
@@ -735,7 +734,7 @@ public class TrackersHandlerTest {
         doThrow(new SQLException("Could not set the string")).when(preparedStatement)
                 .setString(2, "admin");
 
-        trackersHandler.updateInEnrollmentTracker("admin", logPrefix, logger);
+        //trackersHandler.updateInEnrollmentTracker("admin", logPrefix, logger);
 
         verify(dataSource, times(1)).getConnection();
         verify(connection, times(1)).prepareStatement(sql);
@@ -770,7 +769,7 @@ public class TrackersHandlerTest {
         doThrow(new SQLException("Could not set the string")).when(preparedStatement)
                 .setString(4, "enrId");
 
-        trackersHandler.updateInEnrollmentTracker("admin", logPrefix, logger);
+        //trackersHandler.updateInEnrollmentTracker("admin", logPrefix, logger);
 
         verify(dataSource, times(1)).getConnection();
         verify(connection, times(1)).prepareStatement(sql);
@@ -798,11 +797,11 @@ public class TrackersHandlerTest {
         EnrollmentUtil.enrollmentsToSaveInTracker = apiPayLoads;
 
         List<EventTracker> eventTrackers = new LinkedList<>();
-        eventTrackers.add(new EventTracker("eventId1", "instanceId1", "xhjKKwoq", "1", "dkjfErjA"));
-        eventTrackers.add(new EventTracker("eventId2", "instanceId1", "xhjKKwoq", "2", "dkjfErjA"));
+        eventTrackers.add(new EventTracker("eventId1", "instanceId1", "xhjKKwoq", "1", "dkjfErjA", 123));
+        eventTrackers.add(new EventTracker("eventId2", "instanceId1", "xhjKKwoq", "2", "dkjfErjA", 123));
         EventUtil.eventsToSaveInTracker = eventTrackers;
 
-        TrackersHandler.clearTrackerLists();
+//        TrackersHandler.clearTrackerLists();
 
         Assert.assertEquals(0, EnrollmentUtil.enrollmentsToSaveInTracker.size());
         Assert.assertEquals(0, EventUtil.eventsToSaveInTracker.size());

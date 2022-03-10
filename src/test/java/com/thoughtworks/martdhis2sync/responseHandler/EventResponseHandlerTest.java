@@ -25,7 +25,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import static com.thoughtworks.martdhis2sync.CommonTestHelper.setValuesForMemberFields;
 import static com.thoughtworks.martdhis2sync.model.ImportSummary.IMPORT_SUMMARY_RESPONSE_ERROR;
 import static com.thoughtworks.martdhis2sync.model.ImportSummary.IMPORT_SUMMARY_RESPONSE_SUCCESS;
 import static com.thoughtworks.martdhis2sync.model.ImportSummary.IMPORT_SUMMARY_RESPONSE_WARNING;
@@ -80,7 +79,7 @@ public class EventResponseHandlerTest {
 
         responseHandler = new EventResponseHandler();
 
-        setValuesForMemberFields(responseHandler, "loggerService", loggerService);
+//        setValuesForMemberFields(responseHandler, "loggerService", loggerService);
     }
 
     @Test
@@ -637,6 +636,7 @@ public class EventResponseHandlerTest {
                 eventDate,
                 "COMPLETED",
                 eventUniqueId,
+                1234,
                 dataValues
         );
     }
@@ -647,7 +647,8 @@ public class EventResponseHandlerTest {
                 instanceId,
                 "xhjKKwoq",
                 eventUniqueId,
-                "FJTkwmaP"
+                "FJTkwmaP",
+                1234
         );
     }
 }

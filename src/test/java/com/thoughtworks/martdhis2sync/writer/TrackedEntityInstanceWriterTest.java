@@ -23,7 +23,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.*;
 
-import static com.thoughtworks.martdhis2sync.CommonTestHelper.setValuesForMemberFields;
 import static com.thoughtworks.martdhis2sync.model.Conflict.*;
 import static com.thoughtworks.martdhis2sync.model.ImportSummary.IMPORT_SUMMARY_RESPONSE_ERROR;
 import static com.thoughtworks.martdhis2sync.model.ImportSummary.IMPORT_SUMMARY_RESPONSE_SUCCESS;
@@ -92,13 +91,13 @@ public class TrackedEntityInstanceWriterTest {
     public void setUp() throws Exception {
         writer = new TrackedEntityInstanceWriter();
 
-        setValuesForMemberFields(writer, "dataSource", dataSource);
-        setValuesForMemberFields(writer, "syncRepository", syncRepository);
-        setValuesForMemberFields(writer, "markerUtil", markerUtil);
-        setValuesForMemberFields(writer, "programName", "HTS Service");
-        setValuesForMemberFields(writer, "user", "administrator");
-        setValuesForMemberFields(writer, "isSyncFailure", isSyncFailure);
-        setValuesForMemberFields(writer, "loggerService", loggerService);
+//        setValuesForMemberFields(writer, "dataSource", dataSource);
+//        setValuesForMemberFields(writer, "syncRepository", syncRepository);
+//        setValuesForMemberFields(writer, "markerUtil", markerUtil);
+//        setValuesForMemberFields(writer, "programName", "HTS Service");
+//        setValuesForMemberFields(writer, "user", "administrator");
+//        setValuesForMemberFields(writer, "isSyncFailure", isSyncFailure);
+//        setValuesForMemberFields(writer, "loggerService", loggerService);
 
         patient1 = "{\"trackedEntity\": \"%teUID\", " +
                 "\"trackedEntityInstance\": \"\", " +

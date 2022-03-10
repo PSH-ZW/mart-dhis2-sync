@@ -1,15 +1,6 @@
 package com.thoughtworks.martdhis2sync.repository;
 
-import com.thoughtworks.martdhis2sync.model.DHISEnrollmentSyncResponse;
-import com.thoughtworks.martdhis2sync.model.DHISSyncResponse;
-import com.thoughtworks.martdhis2sync.model.DataElementResponse;
-import com.thoughtworks.martdhis2sync.model.EnrollmentImportSummary;
-import com.thoughtworks.martdhis2sync.model.EnrollmentResponse;
-import com.thoughtworks.martdhis2sync.model.ImportSummary;
-import com.thoughtworks.martdhis2sync.model.OrgUnitResponse;
-import com.thoughtworks.martdhis2sync.model.Response;
-import com.thoughtworks.martdhis2sync.model.TrackedEntityAttributeResponse;
-import com.thoughtworks.martdhis2sync.model.TrackedEntityInstanceResponse;
+import com.thoughtworks.martdhis2sync.model.*;
 import com.thoughtworks.martdhis2sync.service.LoggerService;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +21,6 @@ import org.springframework.web.client.RestTemplate;
 import java.nio.charset.Charset;
 import java.util.Collections;
 
-import static com.thoughtworks.martdhis2sync.CommonTestHelper.setValuesForMemberFields;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
@@ -90,9 +80,9 @@ public class SyncRepositoryTest {
     @Before
     public void setUp() throws Exception {
         syncRepository = new SyncRepository();
-        setValuesForMemberFields(syncRepository, "logger", logger);
-        setValuesForMemberFields(syncRepository, "restTemplate", restTemplate);
-        setValuesForMemberFields(syncRepository, "loggerService", loggerService);
+//        setValuesForMemberFields(syncRepository, "logger", logger);
+//        setValuesForMemberFields(syncRepository, "restTemplate", restTemplate);
+//        setValuesForMemberFields(syncRepository, "loggerService", loggerService);
     }
 
     @Test

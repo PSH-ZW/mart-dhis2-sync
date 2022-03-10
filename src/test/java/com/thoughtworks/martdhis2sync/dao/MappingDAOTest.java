@@ -11,20 +11,13 @@ import org.springframework.core.io.Resource;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import static com.thoughtworks.martdhis2sync.CommonTestHelper.setValuesForMemberFields;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.verifyStatic;
-import static org.powermock.api.mockito.PowerMockito.when;
+import static org.powermock.api.mockito.PowerMockito.*;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({BatchUtil.class})
@@ -44,8 +37,8 @@ public class MappingDAOTest {
     @Before
     public void setUp() throws Exception {
         mappingDAO = new MappingDAO();
-        setValuesForMemberFields(mappingDAO, "jdbcTemplate", jdbcTemplate);
-        setValuesForMemberFields(mappingDAO, "searchableResource", searchableResource);
+//        setValuesForMemberFields(mappingDAO, "jdbcTemplate", jdbcTemplate);
+//        setValuesForMemberFields(mappingDAO, "searchableResource", searchableResource);
 
         programName = "Patient Identifier Details";
         getMappingSql = "SELECT lookup_table, mapping_json, config FROM mapping WHERE program_name ='" + programName + "'";
@@ -82,10 +75,10 @@ public class MappingDAOTest {
                 "INNER JOIN marker m ON pi.date_created :: TIMESTAMP > COALESCE(m.last_synced_date, '-infinity') " +
                 "AND category = 'instance' AND program_name = '%s'";
 
-        String actualSql = "SELECT \"patient_id\" " +
-                "FROM patient_identifier pi " +
-                "INNER JOIN marker m ON pi.date_created :: TIMESTAMP > COALESCE(m.last_synced_date, '-infinity') " +
-                "AND category = 'instance' AND program_name = 'Patient Identifier Details'";
+//        String actualSql = "SELECT \"patient_id\" " +
+//                "FROM patient_identifier pi " +
+//                "INNER JOIN marker m ON pi.date_created :: TIMESTAMP > COALESCE(m.last_synced_date, '-infinity') " +
+//                "AND category = 'instance' AND program_name = 'Patient Identifier Details'";
 
 
         record1.put("patient_id", "NINETU190995MT");
@@ -95,7 +88,7 @@ public class MappingDAOTest {
 
         when(BatchUtil.convertResourceOutputToString(searchableResource)).thenReturn(sql);
         when(jdbcTemplate.queryForMap(getMappingSql)).thenReturn(expectedMapping);
-        when(jdbcTemplate.queryForList(actualSql)).thenReturn(expected);
+//        when(jdbcTemplate.queryForList(actualSql)).thenReturn(expected);
 
         actual = mappingDAO.getSearchableFields(programName);
 
@@ -111,17 +104,17 @@ public class MappingDAOTest {
                 "INNER JOIN marker m ON pi.date_created :: TIMESTAMP > COALESCE(m.last_synced_date, '-infinity') " +
                 "AND category = 'instance' AND program_name = '%s'";
 
-        String actualSql = "SELECT \"patient_id\" " +
-                "FROM patient_identifier pi " +
-                "INNER JOIN marker m ON pi.date_created :: TIMESTAMP > COALESCE(m.last_synced_date, '-infinity') " +
-                "AND category = 'instance' AND program_name = 'Patient Identifier Details'";
+//        String actualSql = "SELECT \"patient_id\" " +
+//                "FROM patient_identifier pi " +
+//                "INNER JOIN marker m ON pi.date_created :: TIMESTAMP > COALESCE(m.last_synced_date, '-infinity') " +
+//                "AND category = 'instance' AND program_name = 'Patient Identifier Details'";
 
 
         List<Map<String, Object>> expected = new ArrayList<>();
 
         when(BatchUtil.convertResourceOutputToString(searchableResource)).thenReturn(sql);
         when(jdbcTemplate.queryForMap(getMappingSql)).thenReturn(expectedMapping);
-        when(jdbcTemplate.queryForList(actualSql)).thenReturn(expected);
+//        when(jdbcTemplate.queryForList(actualSql)).thenReturn(expected);
 
         actual = mappingDAO.getSearchableFields(programName);
 

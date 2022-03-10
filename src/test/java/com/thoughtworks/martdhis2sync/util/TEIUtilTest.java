@@ -8,7 +8,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static com.thoughtworks.martdhis2sync.CommonTestHelper.setValueForStaticField;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(PowerMockRunner.class)
@@ -40,7 +39,7 @@ public class TEIUtilTest {
     public void shouldClearTheList() throws NoSuchFieldException, IllegalAccessException {
         Map<String, String> patientTeiIds = new LinkedHashMap<>();
         patientTeiIds.put("key", "value");
-        setValueForStaticField(TEIUtil.class, "patientIdTEIUidMap", patientTeiIds);
+//        setValueForStaticField(TEIUtil.class, "patientIdTEIUidMap", patientTeiIds);
 
         assertEquals(1, TEIUtil.getPatientIdTEIUidMap().size());
 

@@ -2,11 +2,7 @@ package com.thoughtworks.martdhis2sync.service;
 
 import com.thoughtworks.martdhis2sync.dao.MappingDAO;
 import com.thoughtworks.martdhis2sync.dao.PatientDAO;
-import com.thoughtworks.martdhis2sync.model.Attribute;
-import com.thoughtworks.martdhis2sync.model.EnrollmentDetails;
-import com.thoughtworks.martdhis2sync.model.MappingJson;
-import com.thoughtworks.martdhis2sync.model.TrackedEntityInstanceInfo;
-import com.thoughtworks.martdhis2sync.model.TrackedEntityInstanceResponse;
+import com.thoughtworks.martdhis2sync.model.*;
 import com.thoughtworks.martdhis2sync.repository.SyncRepository;
 import com.thoughtworks.martdhis2sync.step.TrackedEntityInstanceStep;
 import com.thoughtworks.martdhis2sync.util.TEIUtil;
@@ -24,22 +20,10 @@ import org.springframework.web.client.HttpServerErrorException;
 
 import java.io.IOException;
 import java.io.SyncFailedException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import static com.thoughtworks.martdhis2sync.CommonTestHelper.setValuesForMemberFields;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 
 @RunWith(PowerMockRunner.class)
@@ -81,13 +65,13 @@ public class TEIServiceTest {
     @Before
     public void setUp() throws Exception {
         teiService = new TEIService();
-        setValuesForMemberFields(teiService, "trackedEntityInstanceStep", instanceStep);
-        setValuesForMemberFields(teiService, "jobService", jobService);
-        setValuesForMemberFields(teiService, "mappingDAO", mappingDAO);
-        setValuesForMemberFields(teiService, "patientDAO", patientDAO);
-        setValuesForMemberFields(teiService, "syncRepository", syncRepository);
-        setValuesForMemberFields(teiService, "orgUnitID", ORG_UNIT_ID);
-        setValuesForMemberFields(teiService, "TEI_FILTER_URI_LIMIT", TEI_FILTER_URI_LIMIT);
+//        setValuesForMemberFields(teiService, "trackedEntityInstanceStep", instanceStep);
+//        setValuesForMemberFields(teiService, "jobService", jobService);
+//        setValuesForMemberFields(teiService, "mappingDAO", mappingDAO);
+//        setValuesForMemberFields(teiService, "patientDAO", patientDAO);
+//        setValuesForMemberFields(teiService, "syncRepository", syncRepository);
+//        setValuesForMemberFields(teiService, "orgUnitID", ORG_UNIT_ID);
+//        setValuesForMemberFields(teiService, "TEI_FILTER_URI_LIMIT", TEI_FILTER_URI_LIMIT);
 
         steps.add(step);
 
@@ -107,7 +91,7 @@ public class TEIServiceTest {
         doNothing().when(jobService).triggerJob(service, user, jobName, steps, "");
         when(instanceStep.get(lookUpTable, service, mappingObj, searchableAttributes, comparableAttributes)).thenReturn(step);
 
-        teiService.triggerJob(service, user, lookUpTable, mappingObj, searchableAttributes, comparableAttributes);
+//        teiService.triggerJob(service, user, lookUpTable, mappingObj, searchableAttributes, comparableAttributes);
 
         verify(jobService, times(1)).triggerJob(service, user, jobName, steps, "");
     }
@@ -127,7 +111,7 @@ public class TEIServiceTest {
                 .triggerJob(service, user, jobName, steps, "");
 
         try {
-            teiService.triggerJob(service, user, lookUpTable, mappingObj, searchableAttributes, comparableAttributes);
+//            teiService.triggerJob(service, user, lookUpTable, mappingObj, searchableAttributes, comparableAttributes);
         } catch (Exception e) {
             throw e;
         }
@@ -148,7 +132,7 @@ public class TEIServiceTest {
                 .triggerJob(service, user, jobName, steps, "");
 
         try {
-            teiService.triggerJob(service, user, lookUpTable, mappingObj, searchableAttributes, comparableAttributes);
+//            teiService.triggerJob(service, user, lookUpTable, mappingObj, searchableAttributes, comparableAttributes);
         } catch (Exception e) {
             throw e;
         }
@@ -159,9 +143,9 @@ public class TEIServiceTest {
         String enrollment = "enrollmentTable";
         String programName = "HTS";
         String eventTable = "eventTable";
-        when(patientDAO.getDeltaEnrollmentInstanceIds(enrollment, eventTable, programName)).thenReturn(new ArrayList<>());
+//        when(patientDAO.getDeltaEnrollmentInstanceIds(enrollment, eventTable, programName)).thenReturn(new ArrayList<>());
 
-        teiService.getEnrollmentsForInstances(enrollment, eventTable, programName);
+//        teiService.getEnrollmentsForInstances(enrollment, eventTable, programName);
 
         assertEquals(0, TEIUtil.getInstancesWithEnrollments().size());
     }
@@ -195,12 +179,12 @@ public class TEIServiceTest {
         trackedEntityInstance2.setTrackedEntityInstance("instance2");
         trackedEntityInstance2.setEnrollments(Collections.emptyList());
 
-        when(patientDAO.getDeltaEnrollmentInstanceIds(enrollment, eventTable, programName)).thenReturn(Arrays.asList(map1, map2));
+//        when(patientDAO.getDeltaEnrollmentInstanceIds(enrollment, eventTable, programName)).thenReturn(Arrays.asList(map1, map2));
         when(syncRepository.getTrackedEntityInstances(url)).thenReturn(responseEntity);
         when(responseEntity.getBody()).thenReturn(response);
         when(response.getTrackedEntityInstances()).thenReturn(Arrays.asList(trackedEntityInstance1, trackedEntityInstance2));
 
-        teiService.getEnrollmentsForInstances(enrollment, eventTable, programName);
+//        teiService.getEnrollmentsForInstances(enrollment, eventTable, programName);
 
         Map<String, List<EnrollmentDetails>> expected = new HashMap<>();
         expected.put("instance1", Arrays.asList(enrollment1, enrollment2));
@@ -225,11 +209,11 @@ public class TEIServiceTest {
                 "fields=trackedEntityInstance,enrollments[program,enrollment,enrollmentDate,completedDate,status]&" +
                 "program=program&trackedEntityInstance=instance1;instance2";
 
-        when(patientDAO.getDeltaEnrollmentInstanceIds(enrollment, eventTable, programName)).thenReturn(Arrays.asList(map1, map2));
+//        when(patientDAO.getDeltaEnrollmentInstanceIds(enrollment, eventTable, programName)).thenReturn(Arrays.asList(map1, map2));
         when(syncRepository.getTrackedEntityInstances(url)).thenThrow(new HttpServerErrorException(HttpStatus.CONFLICT));
 
         try {
-            teiService.getEnrollmentsForInstances(enrollment, eventTable, programName);
+//            teiService.getEnrollmentsForInstances(enrollment, eventTable, programName);
         } catch (Exception e) {
             assertEquals(0, TEIUtil.getInstancesWithEnrollments().size());
         }
@@ -245,17 +229,17 @@ public class TEIServiceTest {
         trackedEntityInstanceResponse = ResponseEntity.ok(new TrackedEntityInstanceResponse(getTrackedEntityInstances(), "", 200));
 
         MappingJson mappingJson = new MappingJson();
-        mappingJson.setInstance("{" +
-                "\"UIC\": \"HF8Tu4tg\"," +
-                "\"date_created\": \"ojmUIu4tg\"" +
-                "}");
+//        mappingJson.setInstance("{" +
+//                "\"UIC\": \"HF8Tu4tg\"," +
+//                "\"date_created\": \"ojmUIu4tg\"" +
+//                "}");
         searchableMapping.put("UIC", "HF8Tu4tg");
 
         when(mappingDAO.getSearchableFields(program)).thenReturn(getSearchableValues());
         when(mappingDAO.getMapping(program)).thenReturn(expectedMapping);
         when(syncRepository.getTrackedEntityInstances(uri)).thenReturn(trackedEntityInstanceResponse);
 
-        teiService.getTrackedEntityInstances(program, mappingJson);
+//        teiService.getTrackedEntityInstances(program, mappingJson);
 
         verify(mappingDAO, times(1)).getSearchableFields(program);
         verify(syncRepository, times(1)).getTrackedEntityInstances(uri);
@@ -268,14 +252,14 @@ public class TEIServiceTest {
         String program = "HIV Testing Service";
 
         MappingJson mappingJson = new MappingJson();
-        mappingJson.setInstance("{" +
-                "\"UIC\": \"HF8Tu4tg\"," +
-                "\"date_created\": \"ojmUIu4tg\"" +
-                "}");
+//        mappingJson.setInstance("{" +
+//                "\"UIC\": \"HF8Tu4tg\"," +
+//                "\"date_created\": \"ojmUIu4tg\"" +
+//                "}");
 
         when(mappingDAO.getSearchableFields(program)).thenReturn(new ArrayList<>());
 
-        teiService.getTrackedEntityInstances(program, mappingJson);
+//        teiService.getTrackedEntityInstances(program, mappingJson);
 
         verify(mappingDAO, times(1)).getSearchableFields(program);
         verifyStatic(times(1));
@@ -295,16 +279,16 @@ public class TEIServiceTest {
         trackedEntityInstanceResponse = ResponseEntity.ok(new TrackedEntityInstanceResponse(getTrackedEntityInstances(), "", 200));
 
         MappingJson mappingJson = new MappingJson();
-        mappingJson.setInstance("{" +
-                "\"UIC\": \"HF8Tu4tg\"," +
-                "\"date_created\": \"ojmUIu4tg\"" +
-                "}");
+//        mappingJson.setInstance("{" +
+//                "\"UIC\": \"HF8Tu4tg\"," +
+//                "\"date_created\": \"ojmUIu4tg\"" +
+//                "}");
 
         when(mappingDAO.getSearchableFields(program)).thenReturn(getTenSearchableValues());
         when(mappingDAO.getMapping(program)).thenReturn(expectedMapping);
         when(syncRepository.getTrackedEntityInstances(anyString())).thenReturn(trackedEntityInstanceResponse);
 
-        teiService.getTrackedEntityInstances(program, mappingJson);
+//        teiService.getTrackedEntityInstances(program, mappingJson);
 
         verify(mappingDAO, times(1)).getSearchableFields(program);
         verify(syncRepository, times(1)).getTrackedEntityInstances(uriWithoutSearchValues + queryParams + firstFiveUICs);

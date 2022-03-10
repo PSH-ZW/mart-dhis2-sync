@@ -17,7 +17,6 @@ import org.springframework.beans.factory.ObjectFactory;
 
 import java.util.*;
 
-import static com.thoughtworks.martdhis2sync.CommonTestHelper.setValuesForMemberFields;
 import static com.thoughtworks.martdhis2sync.util.MarkerUtil.CATEGORY_INSTANCE;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyString;
@@ -58,11 +57,11 @@ public class TrackedEntityInstanceStepTest {
     @Before
     public void setUp() throws Exception {
         teiStep = new TrackedEntityInstanceStep();
-        setValuesForMemberFields(teiStep, "mappingReader", mappingReader);
-        setValuesForMemberFields(teiStep, "processorObjectFactory", processorObjectFactory);
-        setValuesForMemberFields(teiStep, "writer", writer);
-        setValuesForMemberFields(teiStep, "markerUtil", markerUtil);
-        setValuesForMemberFields(teiStep, "stepFactory", stepFactory);
+//        setValuesForMemberFields(teiStep, "mappingReader", mappingReader);
+//        setValuesForMemberFields(teiStep, "processorObjectFactory", processorObjectFactory);
+//        setValuesForMemberFields(teiStep, "writer", writer);
+//        setValuesForMemberFields(teiStep, "markerUtil", markerUtil);
+//        setValuesForMemberFields(teiStep, "stepFactory", stepFactory);
     }
 
     @Test

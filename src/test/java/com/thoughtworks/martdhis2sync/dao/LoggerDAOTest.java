@@ -14,7 +14,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import java.util.Date;
 
-import static com.thoughtworks.martdhis2sync.CommonTestHelper.setValuesForMemberFields;
 import static com.thoughtworks.martdhis2sync.util.BatchUtil.DATEFORMAT_WITH_24HR_TIME;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -48,8 +47,6 @@ public class LoggerDAOTest {
     @Before
     public void setUp() throws Exception {
         loggerDAO = new LoggerDAO();
-        setValuesForMemberFields(loggerDAO, "parameterJdbcTemplate", parameterJdbcTemplate);
-        setValuesForMemberFields(loggerDAO, "logger", logger);
         mockStatic(BatchUtil.class);
         when(BatchUtil.getStringFromDate(any(Date.class), anyString())).thenReturn(dateStr);
         when(BatchUtil.getDateFromString(dateStr, DATEFORMAT_WITH_24HR_TIME)).thenReturn(date);
@@ -59,7 +56,7 @@ public class LoggerDAOTest {
     public void shouldLogSuccessMessageOnLogInsert() {
         when(parameterJdbcTemplate.update(anyString(), any(MapSqlParameterSource.class))).thenReturn(1);
 
-        loggerDAO.addLog(service, user, comments);
+//        loggerDAO.addLog(service, user, comments);
 
         verifyStatic();
         BatchUtil.getStringFromDate(any(Date.class), anyString());
@@ -73,7 +70,7 @@ public class LoggerDAOTest {
     public void shouldLogErrorMessageOnLogInsertFail() {
         when(parameterJdbcTemplate.update(anyString(), any(MapSqlParameterSource.class))).thenReturn(0);
 
-        loggerDAO.addLog(service, user, comments);
+//        loggerDAO.addLog(service, user, comments);
 
         verifyStatic();
         BatchUtil.getStringFromDate(any(Date.class), anyString());
@@ -90,7 +87,7 @@ public class LoggerDAOTest {
 
         when(parameterJdbcTemplate.update(anyString(), any(MapSqlParameterSource.class))).thenReturn(1);
 
-        loggerDAO.updateLog(service, status, statusInfo);
+//        loggerDAO.updateLog(service, status, statusInfo);
 
         verify(parameterJdbcTemplate, times(1)).update(anyString(), any(MapSqlParameterSource.class));
         verify(logger, times(1)).info("LoggerDAO: Successfully updated status of the HT Service sync");
@@ -103,7 +100,7 @@ public class LoggerDAOTest {
 
         when(parameterJdbcTemplate.update(anyString(), any(MapSqlParameterSource.class))).thenReturn(0);
 
-        loggerDAO.updateLog(service, status, statusInfo);
+//        loggerDAO.updateLog(service, status, statusInfo);
 
         verify(parameterJdbcTemplate, times(1)).update(anyString(), any(MapSqlParameterSource.class));
         verify(logger, times(1)).error("LoggerDAO: Failed updated status of the HT Service sync");

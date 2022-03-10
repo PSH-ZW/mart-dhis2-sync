@@ -14,7 +14,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.*;
 
-import static com.thoughtworks.martdhis2sync.CommonTestHelper.setValuesForMemberFields;
 import static com.thoughtworks.martdhis2sync.util.BatchUtil.*;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.times;
@@ -35,7 +34,7 @@ public class TrackedEntityInstanceProcessorTest {
     @Before
     public void setUp() throws Exception {
         processor = new TrackedEntityInstanceProcessor();
-        setValuesForMemberFields(processor, "teUID", "o0kaqrZaY");
+//        setValuesForMemberFields(processor, "teUID", "o0kaqrZaY");
         dateTimeAttributes.add("aQLSyCrOb34");
 
         mockStatic(TEIUtil.class);

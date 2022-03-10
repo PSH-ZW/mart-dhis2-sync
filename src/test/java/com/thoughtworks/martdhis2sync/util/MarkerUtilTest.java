@@ -13,7 +13,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.thoughtworks.martdhis2sync.CommonTestHelper.setValuesForMemberFields;
 import static com.thoughtworks.martdhis2sync.util.MarkerUtil.CATEGORY_INSTANCE;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -30,7 +29,7 @@ public class MarkerUtilTest {
     @Before
     public void setUp() throws Exception {
         markerUtil = new MarkerUtil();
-        setValuesForMemberFields(markerUtil, "jdbcTemplate", jdbcTemplate);
+//        setValuesForMemberFields(markerUtil, "jdbcTemplate", jdbcTemplate);
     }
 
     @Test

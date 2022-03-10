@@ -17,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.*;
 
-import static com.thoughtworks.martdhis2sync.CommonTestHelper.setValuesForMemberFields;
 import static com.thoughtworks.martdhis2sync.model.ImportSummary.IMPORT_SUMMARY_RESPONSE_ERROR;
 import static com.thoughtworks.martdhis2sync.model.ImportSummary.IMPORT_SUMMARY_RESPONSE_SUCCESS;
 import static org.mockito.Matchers.any;
@@ -107,11 +106,11 @@ public class NewActiveAndCompletedEnrollmentWithEventsWriterTest {
         processedTableRows = Arrays.asList(processedTableRow1, processedTableRow2, processedTableRow3);
         writer = new NewActiveAndCompletedEnrollmentWithEventsWriter();
 
-        setValuesForMemberFields(writer, "syncRepository", syncRepository);
-        setValuesForMemberFields(writer, "logger", logger);
-        setValuesForMemberFields(writer, "enrollmentResponseHandler", enrollmentResponseHandler);
-        setValuesForMemberFields(writer, "eventResponseHandler", eventResponseHandler);
-        setValuesForMemberFields(writer, "openLatestCompletedEnrollment", "no");
+//        setValuesForMemberFields(writer, "syncRepository", syncRepository);
+//        setValuesForMemberFields(writer, "logger", logger);
+//        setValuesForMemberFields(writer, "enrollmentResponseHandler", enrollmentResponseHandler);
+//        setValuesForMemberFields(writer, "eventResponseHandler", eventResponseHandler);
+//        setValuesForMemberFields(writer, "openLatestCompletedEnrollment", "no");
 
         when(responseEntity.getBody()).thenReturn(syncResponse);
         when(syncResponse.getResponse()).thenReturn(response);
@@ -389,7 +388,7 @@ public class NewActiveAndCompletedEnrollmentWithEventsWriterTest {
 
     @Test
     public void shouldHaveLatestCompletedEnrollmentIdWhenInstanceHasOnlyCompletedEnrollmentAndConfigIsYes() throws Exception {
-        setValuesForMemberFields(writer, "openLatestCompletedEnrollment", "yes");
+//        setValuesForMemberFields(writer, "openLatestCompletedEnrollment", "yes");
 
         String instanceId = "instance1";
         String enrDate = "2018-10-13";
@@ -438,7 +437,7 @@ public class NewActiveAndCompletedEnrollmentWithEventsWriterTest {
 
     @Test
     public void shouldHaveLatestCompletedEnrollmentIdAndDoNotConsiderTheOrderWhenInstanceHasOnlyCompletedEnrollmentAndConfigIsYes() throws Exception {
-        setValuesForMemberFields(writer, "openLatestCompletedEnrollment", "yes");
+//        setValuesForMemberFields(writer, "openLatestCompletedEnrollment", "yes");
 
         String instanceId = "instance1";
         String enrDate = "2018-10-13";
@@ -487,7 +486,7 @@ public class NewActiveAndCompletedEnrollmentWithEventsWriterTest {
 
     @Test
     public void shouldHaveActiveEnrollmentIdWhenInstanceHasActiveEnrollmentAndConfigIsYes() throws Exception {
-        setValuesForMemberFields(writer, "openLatestCompletedEnrollment", "yes");
+//        setValuesForMemberFields(writer, "openLatestCompletedEnrollment", "yes");
 
         String instanceId = "instance1";
         String enrDate = "2018-10-13";
@@ -694,7 +693,7 @@ public class NewActiveAndCompletedEnrollmentWithEventsWriterTest {
 
     @Test
     public void shouldSyncNewEnrollmentWhenInstanceHasOnlyCompletedEnrollmentAndConfigIsNo() throws Exception {
-        setValuesForMemberFields(writer, "openLatestCompletedEnrollment", "no");
+//        setValuesForMemberFields(writer, "openLatestCompletedEnrollment", "no");
 
         String instanceId = "instance1";
         String enrDate = "2018-10-13";
@@ -759,6 +758,7 @@ public class NewActiveAndCompletedEnrollmentWithEventsWriterTest {
     private ProcessedTableRow getProcessedTableRow(String programUniqueId, EnrollmentAPIPayLoad payLoad) {
         return new ProcessedTableRow(
                 programUniqueId,
+                123,
                 payLoad
         );
     }
@@ -788,6 +788,7 @@ public class NewActiveAndCompletedEnrollmentWithEventsWriterTest {
                 eventDate,
                 "COMPLETED",
                 eventUniqueId,
+                123,
                 dataValues
         );
     }

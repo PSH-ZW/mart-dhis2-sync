@@ -13,13 +13,8 @@ import org.mockito.Mock;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
-import static com.thoughtworks.martdhis2sync.CommonTestHelper.setValuesForMemberFields;
 import static com.thoughtworks.martdhis2sync.model.Conflict.CONFLICT_OBJ_ENROLLMENT_DATE;
 import static com.thoughtworks.martdhis2sync.model.ImportSummary.IMPORT_SUMMARY_RESPONSE_ERROR;
 import static com.thoughtworks.martdhis2sync.model.ImportSummary.IMPORT_SUMMARY_RESPONSE_SUCCESS;
@@ -50,7 +45,7 @@ public class EnrollmentResponseHandlerTest {
 
         responseHandler = new EnrollmentResponseHandler();
 
-        setValuesForMemberFields(responseHandler, "loggerService", loggerService);
+//        setValuesForMemberFields(responseHandler, "loggerService", loggerService);
 
         payLoad1 = getEnrollmentPayLoad(instanceId1, enrDate, "1");
         payLoad2 = getEnrollmentPayLoad(instanceId2, enrDate, "2");
@@ -178,7 +173,7 @@ public class EnrollmentResponseHandlerTest {
         List<EnrollmentAPIPayLoad> payLoads = Arrays.asList(payLoad1, payLoad2);
         Iterator<EnrollmentAPIPayLoad> iterator = payLoads.iterator();
 
-        responseHandler.processCompletedSecondStepResponse(importSummaries, iterator, logger, logPrefix);
+//        responseHandler.processCompletedSecondStepResponse(importSummaries, iterator, logger, logPrefix);
 
         assertEquals("COMPLETED", payLoad1.getStatus());
         assertEquals("COMPLETED", payLoad2.getStatus());
@@ -209,7 +204,7 @@ public class EnrollmentResponseHandlerTest {
         List<EnrollmentAPIPayLoad> payLoads = Arrays.asList(payLoad1, payLoad2);
         Iterator<EnrollmentAPIPayLoad> iterator = payLoads.iterator();
 
-        responseHandler.processCompletedSecondStepResponse(importSummaries, iterator, logger, logPrefix);
+//        responseHandler.processCompletedSecondStepResponse(importSummaries, iterator, logger, logPrefix);
 
         verify(logger, times(1)).error(logPrefix + description);
         verify(loggerService, times(1)).collateLogMessage(description);
@@ -243,7 +238,7 @@ public class EnrollmentResponseHandlerTest {
         List<EnrollmentAPIPayLoad> payLoads = Arrays.asList(payLoad1, payLoad2);
         Iterator<EnrollmentAPIPayLoad> iterator = payLoads.iterator();
 
-        responseHandler.processCompletedSecondStepResponse(importSummaries, iterator, logger, logPrefix);
+//        responseHandler.processCompletedSecondStepResponse(importSummaries, iterator, logger, logPrefix);
 
         verify(logger, times(1)).error(logPrefix + CONFLICT_OBJ_ENROLLMENT_DATE + ": " +
                 conflictMessage);

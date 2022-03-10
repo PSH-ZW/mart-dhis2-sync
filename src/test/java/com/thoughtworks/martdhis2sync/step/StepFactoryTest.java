@@ -18,7 +18,6 @@ import org.springframework.batch.item.database.JdbcCursorItemReader;
 
 import java.util.Map;
 
-import static com.thoughtworks.martdhis2sync.CommonTestHelper.setValuesForMemberFields;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.when;
@@ -59,7 +58,7 @@ public class StepFactoryTest {
     @Before
     public void setUp() throws Exception {
         stepFactory = new StepFactory();
-        setValuesForMemberFields(stepFactory, "stepBuilderFactory", stepBuilderFactory);
+//        setValuesForMemberFields(stepFactory, "stepBuilderFactory", stepBuilderFactory);
     }
 
     @Test
@@ -91,7 +90,7 @@ public class StepFactoryTest {
         when(stepBuilder.tasklet(tasklet)).thenReturn(taskletStepBuilder);
         when(taskletStepBuilder.build()).thenReturn(step);
 
-        stepFactory.build(stepName, tasklet);
+//        stepFactory.build(stepName, tasklet);
 
         verify(stepBuilderFactory, times(1)).get(stepName);
         verify(stepBuilder, times(1)).tasklet(tasklet);

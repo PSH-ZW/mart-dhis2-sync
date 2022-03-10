@@ -1,9 +1,9 @@
 package com.thoughtworks.martdhis2sync.service;
 
-import com.thoughtworks.martdhis2sync.repository.SyncRepository;
 import com.thoughtworks.martdhis2sync.model.OrgUnit;
 import com.thoughtworks.martdhis2sync.model.OrgUnitResponse;
 import com.thoughtworks.martdhis2sync.model.Pager;
+import com.thoughtworks.martdhis2sync.repository.SyncRepository;
 import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,7 +21,6 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.thoughtworks.martdhis2sync.CommonTestHelper.setValuesForMemberFields;
 import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.when;
 
@@ -58,10 +57,10 @@ public class OrgUnitServiceTest {
     @Before
     public void setUp() throws Exception {
         orgUnitService = new OrgUnitService();
-        setValuesForMemberFields(orgUnitService, "syncRepository", syncRepository);
-        setValuesForMemberFields(orgUnitService, "dataSource", dataSource);
-        setValuesForMemberFields(orgUnitService, "dhis2Url", dhis2Url);
-        setValuesForMemberFields(orgUnitService, "rootOrgUnit", ROOT_ORG_UNIT);
+//        setValuesForMemberFields(orgUnitService, "syncRepository", syncRepository);
+//        setValuesForMemberFields(orgUnitService, "dataSource", dataSource);
+//        setValuesForMemberFields(orgUnitService, "dhis2Url", dhis2Url);
+//        setValuesForMemberFields(orgUnitService, "rootOrgUnit", ROOT_ORG_UNIT);
     }
 
     @Test
