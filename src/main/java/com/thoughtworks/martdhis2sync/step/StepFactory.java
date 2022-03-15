@@ -18,7 +18,7 @@ public class StepFactory {
     private StepBuilderFactory stepBuilderFactory;
 
     @Value("${sync.batch.size}")
-    private int syncBatchSize;
+    private Integer syncBatchSize;
 
     protected Step build(String stepName, JdbcCursorItemReader<Map<String, Object>> reader, ItemProcessor processor, ItemWriter writer) {
         return stepBuilderFactory.get(stepName)

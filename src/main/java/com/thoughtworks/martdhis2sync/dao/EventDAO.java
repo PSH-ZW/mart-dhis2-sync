@@ -40,7 +40,7 @@ public class EventDAO {
     }
 
     public List<DhisSyncEvent> getEventsToSync() {
-        String sql = "SELECT id, program_id, encounter_id, patient_id, user, comment from events_to_sync where synced = false order by id";
+        String sql = "SELECT id, program_id, encounter_id, patient_id, username, comment from events_to_sync where synced = false order by id";
         List<DhisSyncEvent> value = jdbcTemplate.query(sql, JdbcTemplateMapperFactory.newInstance()
                 .newRowMapper(DhisSyncEvent.class));
         if (!CollectionUtils.isEmpty(value)) {

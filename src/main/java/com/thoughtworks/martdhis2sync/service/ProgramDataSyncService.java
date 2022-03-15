@@ -35,7 +35,7 @@ public class ProgramDataSyncService {
 
         LinkedList<Step> steps = new LinkedList<>();
         steps.add(step.get(event.getEncounterId(), mappingJson));
-        triggerJob(event.getProgramId(), event.getUser(), steps, JOB_NEW_COMPLETED_ENROLLMENTS, "");
+        triggerJob(event.getProgramId(), event.getUserName(), steps, JOB_NEW_COMPLETED_ENROLLMENTS, "");
     }
 
     private void triggerJob(String service, String user, LinkedList<Step> steps, String jobName, String openLatestCompletedEnrollment)

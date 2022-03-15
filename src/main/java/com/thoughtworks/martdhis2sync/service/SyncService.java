@@ -51,7 +51,7 @@ public class SyncService {
                 TEIUtil.resetTrackedEntityInstaceIDs();
                 //TODO: call this only if instanceId is not present in instance_tracker;
                 teiService.getTrackedEntityInstances(syncEvent.getPatientId());
-                teiService.triggerJob(syncEvent.getPatientId(), syncEvent.getUser(),
+                teiService.triggerJob(syncEvent.getPatientId(), syncEvent.getUserName(),
                         config.getSearchable(), config.getComparable());
 
                 programDataSyncService.syncProgramDetails(syncEvent, mappingJson);
@@ -70,7 +70,7 @@ public class SyncService {
     private void addSyncDetailsToLogComment(DhisSyncEvent syncEvent) {
         String patientId = teiService.getBahmniPatientIdentifier(syncEvent.getPatientId());
         String comment = String.format("Patient Id: %s  Encounter id :%s ", patientId, syncEvent.getEncounterId());
-        loggerService.addLog(syncEvent.getId(), syncEvent.getProgramId(), syncEvent.getUser(), comment);
+        loggerService.addLog(syncEvent.getId(), syncEvent.getProgramId(), syncEvent.getUserName(), comment);
     }
 
     private void validatePatientsBeforeSync() {

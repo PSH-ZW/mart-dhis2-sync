@@ -5,7 +5,7 @@ public class DhisSyncEvent {
     private String programId;
     private String patientId;
     private String encounterId;
-    private String user;
+    private String userName;
     private String comment;
 
     public Integer getId() {
@@ -40,12 +40,12 @@ public class DhisSyncEvent {
         this.encounterId = encounterId;
     }
 
-    public String getUser() {
-        return user;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUser(String user) {
-        this.user = user;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getComment() {
