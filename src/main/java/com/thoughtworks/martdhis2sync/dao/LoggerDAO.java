@@ -22,10 +22,10 @@ public class LoggerDAO {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private static final String LOG_PREFIX = "LoggerDAO: ";
-
+    private final String CATEGORY = "Syncing";
     public void addLog(Integer eventId, String service, String user, String comments) {
-        String sql = "INSERT INTO log (program, event_id, synced_by, comments, status, status_info, date_created) " +
-                "VALUES (:service, :eventId, :user, :comments, 'pending', '', :dateCreated);";
+        String sql = "INSERT INTO log (program, event_id, synced_by, comments, status, status_info, date_created," +
+                " category) VALUES (:service, :eventId, :user, :comments, 'pending', '', :dateCreated, :category);";
         String stringFromDate = getStringFromDate(new Date(), DATEFORMAT_WITH_24HR_TIME);
         Date dateFromString = getDateFromString(stringFromDate, DATEFORMAT_WITH_24HR_TIME);
 
@@ -35,6 +35,7 @@ public class LoggerDAO {
         parameterSource.addValue("comments", comments);
         parameterSource.addValue("eventId", eventId);
         parameterSource.addValue("dateCreated", dateFromString);
+        parameterSource.addValue("category", CATEGORY);
 
         int update = parameterJdbcTemplate.update(sql, parameterSource);
 
