@@ -159,22 +159,6 @@ public class SyncRepositoryTest {
     }
 
     @Test
-    public void shouldReturnOrgUnitsAndLogTheInfo() {
-        when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), any(Class.class)))
-                .thenReturn(orgUnitResponse);
-        when(orgUnitResponse.getStatusCode()).thenReturn(HttpStatus.OK);
-        doNothing().when(logger).info("SyncRepository: Received 200 status code.");
-
-        ResponseEntity<OrgUnitResponse> orgUnits = syncRepository.getOrgUnits("");
-
-        verify(restTemplate, times(1)).exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), any(Class.class));
-        verify(orgUnitResponse, times(1)).getStatusCode();
-        verify(logger, times(1)).info("SyncRepository: Received 200 status code.");
-
-        assertEquals(orgUnitResponse, orgUnits);
-    }
-
-    @Test
     public void shouldGetDataElementsInfoAndLog() {
         when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), any(Class.class)))
                 .thenReturn(dataElementResponse);
@@ -282,20 +266,6 @@ public class SyncRepositoryTest {
             verify(restTemplate, times(1)).exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), any(Class.class));
             verify(logger, times(1)).info("SyncRepository: org.springframework.web.client.HttpServerErrorException: 409 CONFLICT");
         }
-    }
-
-    @Test
-    public void shouldReturnNullAndLogTheError() {
-        when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), any(Class.class)))
-                .thenThrow(new HttpServerErrorException(HttpStatus.CONFLICT, "CONFLICT"));
-        doNothing().when(logger).error("SyncRepository: org.springframework.web.client.HttpServerErrorException: 409 CONFLICT");
-
-        ResponseEntity<OrgUnitResponse> orgUnits = syncRepository.getOrgUnits("/api/TrackedEntityInstance");
-
-        verify(restTemplate, times(1)).exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), any(Class.class));
-        verify(logger, times(1)).error("SyncRepository: org.springframework.web.client.HttpServerErrorException: 409 CONFLICT");
-
-        assertNull(orgUnits);
     }
 
     @Test
