@@ -91,4 +91,15 @@ public class EventDAO {
         }
         return eventId != null? eventId : "";
     }
+
+    public String getEncounterOrgUnitId(Integer encounterId) {
+        String sql = "select out.id from orgunit_tracker out inner join encounter e on e.org_unit = out.orgunit where encounter_id = ?";
+        String orgUnitId = null;
+        try{
+            orgUnitId = jdbcTemplate.queryForObject(sql, String.class, encounterId);
+        } catch (DataAccessException e) {
+            logger.info("Could not find org unit for encounter {}.", encounterId);
+        }
+        return orgUnitId != null? orgUnitId : "";
+    }
 }

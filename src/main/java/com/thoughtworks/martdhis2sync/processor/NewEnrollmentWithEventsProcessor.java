@@ -13,6 +13,7 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -68,13 +69,15 @@ public class NewEnrollmentWithEventsProcessor extends EnrollmentWithEventProcess
         String programStageId = mapping.get(Constants.DHIS_PROGRAM_STAGE_ID).getAsString();
         Integer encounterId = tableRow.get("encounter_id").getAsInt();
         String eventDate = tableRow.get("date_created").getAsString();
+        String encounterOrgUnitId = eventDAO.getEncounterOrgUnitId(encounterId);
+        encounterOrgUnitId = StringUtils.hasLength(encounterOrgUnitId) ? encounterOrgUnitId : orgUnitId;
         return new Event(
                 eventDAO.getEventIdFromEventTrackerIfExists(encounterId, programStageId),
                 instanceId,
                 enrollmentDAO.getEnrollmentIdForInstanceId(instanceId),
                 programId,
                 programStageId,
-                orgUnitId,
+                encounterOrgUnitId,
                 getFormattedDateString(eventDate, DATEFORMAT_WITH_24HR_TIME, DATEFORMAT_WITHOUT_TIME),
                 Event.ACTIVE,
                 "TestId",
