@@ -22,7 +22,7 @@ public class LoggerDAO {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private static final String LOG_PREFIX = "LoggerDAO: ";
-    private final String CATEGORY = "Syncing";
+    private final String CATEGORY = "dhis-sync";
     public void addLog(Integer eventId, String service, String user, String comments) {
         String sql = "INSERT INTO log (program, event_id, synced_by, comments, status, status_info, date_created," +
                 " category) VALUES (:service, :eventId, :user, :comments, 'pending', '', :dateCreated, :category);";
