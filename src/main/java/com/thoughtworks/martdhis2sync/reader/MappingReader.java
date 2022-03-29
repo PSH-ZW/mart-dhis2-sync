@@ -52,11 +52,6 @@ public class MappingReader {
         return sql;
     }
 
-    public JdbcCursorItemReader<Map<String, Object>> getInstanceReader(String lookupTable, String programName) {
-        String sql = String.format(getSql(instanceResource), lookupTable, programName);
-        return get(sql);
-    }
-
     public JdbcCursorItemReader<Map<String, Object>> getInstanceReader(String patientId) {
         String sql = String.format(getSql(instanceResource), patientId);
         return get(sql);

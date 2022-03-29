@@ -43,9 +43,6 @@ public class SyncRepositoryTest {
     private ResponseEntity<DHISEnrollmentSyncResponse> enrollmentResponseEntity;
 
     @Mock
-    private ResponseEntity<OrgUnitResponse> orgUnitResponse;
-
-    @Mock
     private ResponseEntity<DataElementResponse> dataElementResponse;
 
     @Mock
