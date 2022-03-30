@@ -95,11 +95,30 @@ public class EventDAO {
     public String getEncounterOrgUnitId(Integer encounterId) {
         String sql = "select out.id from orgunit_tracker out inner join encounter e on e.org_unit = out.orgunit where encounter_id = ?";
         String orgUnitId = null;
-        try{
+        try {
             orgUnitId = jdbcTemplate.queryForObject(sql, String.class, encounterId);
         } catch (DataAccessException e) {
             logger.info("Could not find org unit for encounter {}.", encounterId);
         }
-        return orgUnitId != null? orgUnitId : "";
+        return orgUnitId != null ? orgUnitId : "";
+    }
+
+    public int getRetryCountFromEventsToSync(Integer eventsToSyncID){
+        String checkSql = "select retry_count from events_to_sync where id = ?";
+        List<Integer> count = jdbcTemplate.query(checkSql, JdbcTemplateMapperFactory.newInstance()
+                .newRowMapper(Integer.class), eventsToSyncID);
+        if(CollectionUtils.isEmpty(count) || count.get(0) == null) {
+            return 0;
+        }
+        return count.get(0);
+    }
+
+    public void updateRetryCountForFailedSync(Integer id, Integer retryCount) {
+        String sql = "update events_to_sync set retry_count = ? where id = ?";
+        try {
+            jdbcTemplate.update(sql, retryCount, id);
+        } catch (DataAccessException e) {
+            logger.error(String.format("Could not update retry_count for event with id %s as synced", id), e);
+        }
     }
 }

@@ -6,9 +6,13 @@ import com.thoughtworks.martdhis2sync.model.DhisSyncEvent;
 import com.thoughtworks.martdhis2sync.model.Mapping;
 import com.thoughtworks.martdhis2sync.model.MappingJson;
 import com.thoughtworks.martdhis2sync.util.TEIUtil;
+import org.simpleflatmapper.jdbc.spring.JdbcTemplateMapperFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.HttpServerErrorException;
 
 import java.util.List;
@@ -57,11 +61,10 @@ public class SyncService {
                 programDataSyncService.syncProgramDetails(syncEvent, mappingJson);
                 loggerService.updateLog(syncEvent.getId(), SUCCESS);
                 eventDAO.markEventAsSynced(syncEvent.getId());
-            } catch (HttpServerErrorException e) {
-                loggerService.updateLog(syncEvent.getId(), FAILED);
-                throw e;
             } catch (Exception e) {
+                int retryCount = eventDAO.getRetryCountFromEventsToSync(syncEvent.getId());
                 loggerService.updateLog(syncEvent.getId(), FAILED);
+                eventDAO.updateRetryCountForFailedSync(syncEvent.getId(), retryCount);
                 e.printStackTrace();
             }
         }
