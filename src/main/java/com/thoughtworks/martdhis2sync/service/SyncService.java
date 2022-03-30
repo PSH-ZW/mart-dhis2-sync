@@ -46,7 +46,6 @@ public class SyncService {
         for (DhisSyncEvent syncEvent : eventsToSync) {
             addSyncDetailsToLogComment(syncEvent);
             try {
-                //TODO:get it as an object.
                 Mapping mapping = mappingService.getMapping(syncEvent.getProgramId());
                 MappingJson mappingJson = mapping.getMappingJson();
                 Config config = mapping.getConfig();

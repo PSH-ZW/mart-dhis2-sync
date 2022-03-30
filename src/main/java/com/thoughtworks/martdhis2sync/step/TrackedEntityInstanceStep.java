@@ -2,7 +2,6 @@ package com.thoughtworks.martdhis2sync.step;
 
 import com.thoughtworks.martdhis2sync.processor.TrackedEntityInstanceProcessor;
 import com.thoughtworks.martdhis2sync.reader.MappingReader;
-import com.thoughtworks.martdhis2sync.util.MarkerUtil;
 import com.thoughtworks.martdhis2sync.writer.TrackedEntityInstanceWriter;
 import org.springframework.batch.core.Step;
 import org.springframework.beans.factory.ObjectFactory;
@@ -25,9 +24,6 @@ public class TrackedEntityInstanceStep {
     private TrackedEntityInstanceWriter writer;
 
     @Autowired
-    private MarkerUtil markerUtil;
-
-    @Autowired
     private StepFactory stepFactory;
 
     private static final String TEI_STEP_NAME = "Tracked Entity Step";
@@ -41,7 +37,6 @@ public class TrackedEntityInstanceStep {
         return processor;
     }
 
-    //TODO: remove above
     public Step get(String patientId, Object mappingObj, List<String> searchableAttributes, List<String> comparableAttributes) {
         return stepFactory.build(
                 TEI_STEP_NAME,
