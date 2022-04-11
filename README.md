@@ -23,7 +23,7 @@ one-by-one. For each event, we will check if a Tracked Entity for the correspond
 doesn't we will create a new one, otherwise we will use the existing one. Similarly, we will check if the patient is
 enrolled to the ZW - New Start EMR program. If the patient is already enrolled we will take the existing enrolment ID,
 otherwise we will create a new one. The enrollment date will be that of the oldest bahmni-program enrolment. We will use
-these patient and enrolment ID's for syncing the events. The DHIS Ids for patients, program enrolments and encounters
+these patient and enrolment ID's for syncing the events. The DHIS Ids for patients, program enrolments and events
 will be stored in tracker tables in the analytics DB, namely `instance_tracker`, `enrolment_tracker` and `event_tracker`
 tables.
 
@@ -95,13 +95,15 @@ The structure of the mapping will be as given below.
 The patient mapping will also be stored in the mapping table itself, which stores the mappings from the columns in patient table
 to DHIS Tracked Entity Attributes.
 
+![img.png](readmeImages/PatientMapping.png)
+![img.png](readmeImages/PatientMappingDetailed.png)
 ####Processors
 
 Processors create the request body we need to sync to DHIS. eg : `TrackedEntityInstanceProcessor`.
 
 ####Writers
 
-Writers push the data to DHIS2 endpoints using `SyncRepository` and handle the responses.
+Writers push the data to DHIS2 endpoints using `SyncRepository` and handle the responses from DHIS.
 eg : `TrackedEntityInstanceWriter`
 
 ## Logs
