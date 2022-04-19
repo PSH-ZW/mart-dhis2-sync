@@ -46,9 +46,17 @@ public class EnrollmentDAO {
     }
 
     public String getOldestProgramEnrolmentDateForPatient(Integer patientId) {
-        String sql = "select date_enrolled from program_enrolment where patient_id = ? order by date_enrolled limit 1";
+        // Return the oldest program enrollment date for patient. If patient does not have any enrollments take the
+        // patient creation date as enrollment date.
+        String enrollmentDateSql = "select date_enrolled from program_enrolment where patient_id = ? order by date_enrolled limit 1";
+        String patientCreatedDateSql = "select date_created from patient where patient_id = ?";
         try{
-            return jdbcTemplate.queryForObject(sql, String.class, patientId);
+            return jdbcTemplate.queryForObject(enrollmentDateSql, String.class, patientId);
+        } catch (DataAccessException e) {
+            logger.error("Could not get enrollment date for patient with id {}, getting date_created for patient", patientId);
+        }
+        try{
+            return jdbcTemplate.queryForObject(patientCreatedDateSql, String.class, patientId);
         } catch (DataAccessException e) {
             e.printStackTrace();
         }
