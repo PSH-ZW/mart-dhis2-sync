@@ -26,7 +26,7 @@ public class NewEnrollmentWithEventsProcessor extends EnrollmentWithEventProcess
     @Value("${dhis2.program-id}")
     private String programId;
 
-    @Value("${country.org.unit.id.for.patient.data.duplication.check}")
+    @Value("${country.org.unit.for.orgunit.sync}")
     private String orgUnitId;
 
     @Autowired
@@ -51,6 +51,7 @@ public class NewEnrollmentWithEventsProcessor extends EnrollmentWithEventProcess
         String instanceId = patientDAO.getInstanceIdForPatient(patientId);
         String incidentDate = tableRowJsonObject.get("date_created").getAsString();
         String programEnrolmentDate = enrollmentDAO.getOldestProgramEnrolmentDateForPatient(Integer.valueOf(patientId));
+        System.out.println("############ORGUNIT ID" + orgUnitId);
         return new EnrollmentAPIPayLoad(
                enrollmentDAO.getEnrollmentIdForInstanceId(instanceId),
                 instanceId,

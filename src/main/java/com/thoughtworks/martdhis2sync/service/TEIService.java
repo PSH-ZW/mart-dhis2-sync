@@ -37,6 +37,9 @@ public class TEIService {
     @Value("${country.org.unit.id.for.patient.data.duplication.check}")
     private String orgUnitID;
 
+    @Value("${dhis2.program-id}")
+    private String programId;
+
     @Autowired
     private MappingService mappingService;
 
@@ -91,6 +94,8 @@ public class TEIService {
         url.append("&ou=");
         url.append(orgUnitID);
         url.append("&ouMode=DESCENDANTS");
+        url.append("&program=");
+        url.append(programId);
 
 
         StringBuilder uri = new StringBuilder();
