@@ -45,7 +45,7 @@ public class ProgramDataSyncStep {
         Map<String, Map<String, Map<String, String>>> formTableMappings = mappingObj.getFormTableMappings();
         for(String table : formTableMappings.keySet()) {
             Map<String, Map<String, String>> columnMappingWithElementNameAndId = formTableMappings.get(table);
-            Map<String, String> columnMappingWithId = BatchUtil.getColumnNameToDhisElementIdMap(columnMappingWithElementNameAndId);
+            Map<String, String> columnMappingWithId = BatchUtil.getColumnNameToDhisElementIdMap(table, columnMappingWithElementNameAndId);
             columnMappingsWithProgramStageId.putAll(columnMappingWithId);
         }
         columnMappingsWithProgramStageId.put(Constants.DHIS_PROGRAM_STAGE_ID, mappingObj.getDhisProgramStageId().getId());

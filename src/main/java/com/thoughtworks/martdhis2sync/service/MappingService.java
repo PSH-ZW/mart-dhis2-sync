@@ -21,6 +21,7 @@ public class MappingService {
     private Map<String, String> dhisElementMap = new HashMap<>(); // used for displaying the elementName corresponding to the id in logs.
 
     public Mapping getMapping(String mappingName) {
+        //TODO: check date modified and update mapping in case of mismatch.
         return mappingCache.computeIfAbsent(mappingName, this::getMappingAndAddToElementMap);
     }
 

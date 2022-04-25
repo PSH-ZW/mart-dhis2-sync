@@ -1,6 +1,7 @@
 package com.thoughtworks.martdhis2sync.reader;
 
 import com.thoughtworks.martdhis2sync.dao.EventDAO;
+import com.thoughtworks.martdhis2sync.mapper.PsiRowMapper;
 import com.thoughtworks.martdhis2sync.model.MappingJson;
 import com.thoughtworks.martdhis2sync.util.BatchUtil;
 import org.slf4j.Logger;
@@ -9,7 +10,6 @@ import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
-import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
@@ -37,7 +37,7 @@ public class MappingReader {
         JdbcCursorItemReader<Map<String, Object>> reader = new JdbcCursorItemReader<>();
         reader.setDataSource(dataSource);
         reader.setSql(sql);
-        reader.setRowMapper(new ColumnMapRowMapper());
+        reader.setRowMapper(new PsiRowMapper());
         return reader;
     }
 

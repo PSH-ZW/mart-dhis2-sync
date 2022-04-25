@@ -78,7 +78,7 @@ public class TEIService {
             MappingJson mappingJson = mapping.getMappingJson();
             Map<String, Map<String, String>> patientMappingWithElementNames =
                     mappingJson.getFormTableMappings().get(Constants.PATIENT_TABLE_NAME);
-            Map<String, String> patientMapping = BatchUtil.getColumnNameToDhisElementIdMap(patientMappingWithElementNames);
+            Map<String, String> patientMapping = BatchUtil.getColumnNameToDhisElementIdMap(Constants.PATIENT_TABLE_NAME, patientMappingWithElementNames);
             steps.add(trackedEntityInstanceStep.get(patientId, patientMapping, searchableAttributes, comparableAttributes));
             jobService.triggerJob(user, TEI_JOB_NAME, steps, "");
         } catch (Exception e) {

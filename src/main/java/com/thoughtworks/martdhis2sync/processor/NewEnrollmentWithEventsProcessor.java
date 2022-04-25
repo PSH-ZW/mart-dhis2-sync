@@ -51,7 +51,6 @@ public class NewEnrollmentWithEventsProcessor extends EnrollmentWithEventProcess
         String instanceId = patientDAO.getInstanceIdForPatient(patientId);
         String incidentDate = tableRowJsonObject.get("date_created").getAsString();
         String programEnrolmentDate = enrollmentDAO.getOldestProgramEnrolmentDateForPatient(Integer.valueOf(patientId));
-        System.out.println("############ORGUNIT ID" + orgUnitId);
         return new EnrollmentAPIPayLoad(
                enrollmentDAO.getEnrollmentIdForInstanceId(instanceId),
                 instanceId,
