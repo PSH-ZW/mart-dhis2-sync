@@ -80,15 +80,19 @@ public class BatchUtil {
     public static Map<String, String> getColumnNameToDhisElementIdMap(String tableName, Map<String, Map<String, String>> mapping) {
         Map<String, String> columnToElementMapping = new HashMap<>();
         for(String columnName : mapping.keySet()) {
-            //Appending table names to columns to avoid conflicts in the case where there are same columns in different tables.
-            //We will be skipping patient table as there won't be multiple tables for patient.
             String elementId = mapping.get(columnName).get("id");
-            if(!tableName.equals(Constants.PATIENT_TABLE_NAME)) {
+            if(shouldAppendTableNameToColumnName(tableName, columnName)) {
                 columnName = tableName + "_" + columnName;
             }
             columnToElementMapping.put(columnName, elementId);
         }
 
         return columnToElementMapping;
+    }
+
+    public static boolean shouldAppendTableNameToColumnName(String tableName, String columnName) {
+        //Appending table names to columns to avoid conflicts in the case where there are same column names in different tables.
+        //We will be skipping patient table as there won't be multiple tables for patient.
+        return !tableName.equals(Constants.PATIENT_TABLE_NAME) && !Constants.SPECIAL_FIELDS.contains(columnName);
     }
 }
