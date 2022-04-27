@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class Mapping {
     MappingJson mappingJson;
     Config config;
+    String dateModified;
 
     public MappingJson getMappingJson() {
         return mappingJson;
@@ -21,5 +22,13 @@ public class Mapping {
 
     public void setConfig(Config config) {
         this.config = config;
+    }
+
+    public String getDateModified() {
+        return dateModified;
+    }
+
+    public void setDateModified(String dateModified) {
+        this.dateModified = dateModified;
     }
 }

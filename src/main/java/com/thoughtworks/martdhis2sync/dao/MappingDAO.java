@@ -25,4 +25,10 @@ public class MappingDAO {
 
         return jdbcTemplate.queryForMap(sql);
     }
+
+    public String getDateModifiedForMapping(String mappingName) {
+        String sql = String.format("SELECT date_modified FROM mapping WHERE program_name ='%s'", mappingName);
+
+        return jdbcTemplate.queryForObject(sql, String.class);
+    }
 }
