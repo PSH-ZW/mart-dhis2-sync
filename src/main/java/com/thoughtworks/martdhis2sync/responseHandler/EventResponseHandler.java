@@ -10,10 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import static com.thoughtworks.martdhis2sync.model.ImportSummary.IMPORT_SUMMARY_RESPONSE_ERROR;
 import static com.thoughtworks.martdhis2sync.model.ImportSummary.IMPORT_SUMMARY_RESPONSE_SUCCESS;
@@ -65,7 +62,8 @@ public class EventResponseHandler {
         for (ImportSummary importSummary : importSummaries) {
             if (isIgnored(importSummary)) {
                 eventTrackerIterator.next();
-                logger.error(logPrefix + importSummary.getDescription());
+                String descriptionWithElementName = getInfoFromDescription(importSummary.getDescription());
+                logger.error(logPrefix + descriptionWithElementName);
                 loggerService.collateLogMessage(String.format("%s", importSummary.getDescription()));
             } else if (isConflicted(importSummary)) {
                 importSummary.getConflicts().forEach(conflict -> {
@@ -83,6 +81,26 @@ public class EventResponseHandler {
                 processImportSummaries(Collections.singletonList(importSummary), eventTrackerIterator);
             }
         }
+    }
+
+    //if string with id's included within '[',']' is passed ,will return string with the id name
+    private String getInfoFromDescription(String description) {
+        int startIndex = description.indexOf('[');
+        int endIndex = description.indexOf(']');
+        if(startIndex == 0) return description;
+        String descriptionContainingId = description.substring(startIndex + 1, endIndex);
+        StringBuilder stringBuilder  = new StringBuilder();
+        stringBuilder.append(description, 0, startIndex + 1);
+        String comma = "";
+        String[] multipleId = descriptionContainingId.split(",");
+        for(String Id: multipleId){
+            stringBuilder.append(comma);
+            comma = ",";
+            String elementName = mappingService.getElementWithId(Id);
+            if(elementName != null)  stringBuilder.append(elementName);
+        }
+        stringBuilder.append(description.substring(endIndex));
+        return stringBuilder.toString();
     }
 
 
