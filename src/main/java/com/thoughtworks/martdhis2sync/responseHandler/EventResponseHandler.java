@@ -64,7 +64,7 @@ public class EventResponseHandler {
                 eventTrackerIterator.next();
                 String descriptionWithElementName = getInfoFromDescription(importSummary.getDescription());
                 logger.error(logPrefix + descriptionWithElementName);
-                loggerService.collateLogMessage(String.format("%s", importSummary.getDescription()));
+                loggerService.collateLogMessage(String.format("%s", descriptionWithElementName));
             } else if (isConflicted(importSummary)) {
                 importSummary.getConflicts().forEach(conflict -> {
                     String elementId = conflict.getObject();
