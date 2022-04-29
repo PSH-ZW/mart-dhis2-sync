@@ -87,7 +87,9 @@ public class EventResponseHandler {
     private String getInfoFromDescription(String description) {
         int startIndex = description.indexOf('[');
         int endIndex = description.indexOf(']');
-        if(startIndex == 0) return description;
+        if(startIndex < 0) {
+            return description;
+        }
         String descriptionContainingId = description.substring(startIndex + 1, endIndex);
         StringBuilder stringBuilder  = new StringBuilder();
         stringBuilder.append(description, 0, startIndex + 1);
@@ -97,7 +99,9 @@ public class EventResponseHandler {
             stringBuilder.append(comma);
             comma = ",";
             String elementName = mappingService.getElementWithId(Id);
-            if(elementName != null)  stringBuilder.append(elementName);
+            if(elementName != null)  {
+                stringBuilder.append(elementName);
+            }
         }
         stringBuilder.append(description.substring(endIndex));
         return stringBuilder.toString();
