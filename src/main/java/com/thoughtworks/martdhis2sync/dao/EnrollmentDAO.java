@@ -52,15 +52,14 @@ public class EnrollmentDAO {
         // patient creation date as enrollment date.
         String enrollmentDateSql = "select date_enrolled from program_enrolment where patient_id = ? order by date_enrolled limit 1";
         String patientCreatedDateSql = "select date_created from patient where patient_id = ?";
-        String oldestEnrolmentDate;
         try{
             return jdbcTemplate.queryForObject(enrollmentDateSql, String.class, patientId);
         } catch (DataAccessException e) {
             logger.error("Could not get enrollment date for patient with id {}, getting date_created for patient", patientId);
         }
         try{
-            oldestEnrolmentDate = jdbcTemplate.queryForObject(patientCreatedDateSql, String.class, patientId);
-            return getFormattedDateString(oldestEnrolmentDate, DATEFORMAT_WITH_24HR_TIME, DATEFORMAT_WITHOUT_TIME);
+            String patientCreateDate = jdbcTemplate.queryForObject(patientCreatedDateSql, String.class, patientId);
+            return getFormattedDateString(patientCreateDate, DATEFORMAT_WITH_24HR_TIME, DATEFORMAT_WITHOUT_TIME);
         } catch (DataAccessException e) {
             e.printStackTrace();
         }
