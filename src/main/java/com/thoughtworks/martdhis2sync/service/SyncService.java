@@ -10,12 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.ResourceAccessException;
 
+import java.io.IOException;
+import java.net.SocketException;
 import java.util.List;
 import java.util.Map;
 
-import static com.thoughtworks.martdhis2sync.service.LoggerService.FAILED;
-import static com.thoughtworks.martdhis2sync.service.LoggerService.SUCCESS;
+import static com.thoughtworks.martdhis2sync.service.LoggerService.*;
 
 @Service
 public class SyncService {
@@ -56,7 +58,10 @@ public class SyncService {
                 programDataSyncService.syncProgramDetails(syncEvent, mappingJson);
                 loggerService.updateLog(syncEvent.getId(), SUCCESS);
                 eventDAO.markEventAsSynced(syncEvent.getId());
-            } catch (Exception e) {
+            } catch (ResourceAccessException re){
+                loggerService.updateLog(syncEvent.getId(), CONNECTIVITY_ISSUE);
+                re.printStackTrace();
+            }catch (Exception e) {
                 int retryCount = eventDAO.getRetryCountFromEventsToSync(syncEvent.getId());
                 loggerService.updateLog(syncEvent.getId(), FAILED);
                 eventDAO.updateRetryCountForFailedSync(syncEvent.getId(), retryCount + 1);
