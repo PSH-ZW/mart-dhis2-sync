@@ -7,8 +7,10 @@ import com.thoughtworks.martdhis2sync.model.Mapping;
 import com.thoughtworks.martdhis2sync.model.MappingJson;
 import com.thoughtworks.martdhis2sync.util.TEIUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
@@ -37,36 +39,48 @@ public class SyncService {
     @Autowired
     protected EventDAO eventDAO;
 
+    @Value("${sync.page.size}")
+    private Integer limit;
+
     public void syncToDhis() {
         validatePatientsBeforeSync();
 
-        List<DhisSyncEvent> eventsToSync = eventDAO.getEventsToSync();
-        for (DhisSyncEvent syncEvent : eventsToSync) {
-            addSyncDetailsToLogComment(syncEvent);
-            try {
-                Mapping mapping = mappingService.getMapping(syncEvent.getProgramId());
-                MappingJson mappingJson = mapping.getMappingJson();
-                Config config = mapping.getConfig();
-                //TODO: clearing the global maps, we need to handle instance_tracking properly.
-                TEIUtil.resetPatientTEIUidMap();
-                TEIUtil.resetTrackedEntityInstaceIDs();
-                //TODO: call this only if instanceId is not present in instance_tracker;
-                teiService.getTrackedEntityInstances(syncEvent.getPatientId());
-                teiService.triggerJob(syncEvent.getPatientId(), syncEvent.getUserName(),
-                        config.getSearchable(), config.getComparable());
-
-                programDataSyncService.syncProgramDetails(syncEvent, mappingJson);
-                loggerService.updateLog(syncEvent.getId(), SUCCESS);
-                eventDAO.markEventAsSynced(syncEvent.getId());
-            } catch (ResourceAccessException re){
-                loggerService.updateLog(syncEvent.getId(), CONNECTIVITY_ISSUE);
-                re.printStackTrace();
-            }catch (Exception e) {
-                int retryCount = eventDAO.getRetryCountFromEventsToSync(syncEvent.getId());
-                loggerService.updateLog(syncEvent.getId(), FAILED);
-                eventDAO.updateRetryCountForFailedSync(syncEvent.getId(), retryCount + 1);
-                e.printStackTrace();
+        int lastProcessedEventId = 0;
+        List<DhisSyncEvent> eventsToSync = eventDAO.getEventsToSync(lastProcessedEventId, limit);
+        while(!CollectionUtils.isEmpty(eventsToSync)) {
+            for (DhisSyncEvent event : eventsToSync) {
+                addSyncDetailsToLogComment(event);
+                syncEvent(event);
+                lastProcessedEventId = event.getId();
             }
+            eventsToSync = eventDAO.getEventsToSync(lastProcessedEventId, limit);
+        }
+    }
+
+    private void syncEvent(DhisSyncEvent event) {
+        try {
+            Mapping mapping = mappingService.getMapping(event.getProgramId());
+            MappingJson mappingJson = mapping.getMappingJson();
+            Config config = mapping.getConfig();
+            //TODO: clearing the global maps, we need to handle instance_tracking properly.
+            TEIUtil.resetPatientTEIUidMap();
+            TEIUtil.resetTrackedEntityInstaceIDs();
+            //TODO: call this only if instanceId is not present in instance_tracker;
+            teiService.getTrackedEntityInstances(event.getPatientId());
+            teiService.triggerJob(event.getPatientId(), event.getUserName(),
+                    config.getSearchable(), config.getComparable());
+
+            programDataSyncService.syncProgramDetails(event, mappingJson);
+            loggerService.updateLog(event.getId(), SUCCESS);
+            eventDAO.markEventAsSynced(event.getId());
+        } catch (ResourceAccessException re){
+            loggerService.updateLog(event.getId(), CONNECTIVITY_ISSUE);
+            re.printStackTrace();
+        }catch (Exception e) {
+            int retryCount = eventDAO.getRetryCountFromEventsToSync(event.getId());
+            loggerService.updateLog(event.getId(), FAILED);
+            eventDAO.updateRetryCountForFailedSync(event.getId(), retryCount + 1);
+            e.printStackTrace();
         }
     }
 

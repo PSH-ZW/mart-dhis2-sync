@@ -39,10 +39,10 @@ public class EventDAO {
         return null;
     }
 
-    public List<DhisSyncEvent> getEventsToSync() {
-        String sql = "SELECT id, program_id, encounter_id, patient_id, username, comment from events_to_sync where synced = false order by id";
+    public List<DhisSyncEvent> getEventsToSync(int lastProcessedEventId, int limit) {
+        String sql = "SELECT id, program_id, encounter_id, patient_id, username, comment from events_to_sync where synced = false and id > ? order by id limit ? ";
         List<DhisSyncEvent> value = jdbcTemplate.query(sql, JdbcTemplateMapperFactory.newInstance()
-                .newRowMapper(DhisSyncEvent.class));
+                .newRowMapper(DhisSyncEvent.class), lastProcessedEventId, limit);
         if (!CollectionUtils.isEmpty(value)) {
             return value;
         }
