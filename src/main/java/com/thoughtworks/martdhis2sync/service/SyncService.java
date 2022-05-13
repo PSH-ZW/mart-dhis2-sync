@@ -14,8 +14,6 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
-import java.io.IOException;
-import java.net.SocketException;
 import java.util.List;
 import java.util.Map;
 
@@ -51,8 +49,8 @@ public class SyncService {
             for (DhisSyncEvent event : eventsToSync) {
                 addSyncDetailsToLogComment(event);
                 syncEvent(event);
-                lastProcessedEventId = event.getId();
             }
+            lastProcessedEventId = eventsToSync.get(eventsToSync.size() - 1).getId();
             eventsToSync = eventDAO.getEventsToSync(lastProcessedEventId, limit);
         }
     }
