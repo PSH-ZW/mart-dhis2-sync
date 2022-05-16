@@ -97,7 +97,7 @@ public class SyncRepository {
             logger.error(LOG_PREFIX + e);
             throw e;
         } catch (HttpServerErrorException e) {
-            loggerService.collateLogMessage(String.format("%s %s", e.getStatusCode(), e.getStatusText()));
+            loggerService.collateLogMessage(String.format("%s %s", e.getStatusCode(), e.getStatusCode().getReasonPhrase()));
             logger.error(LOG_PREFIX + e);
             throw e;
         }
@@ -134,11 +134,11 @@ public class SyncRepository {
                     new Gson().fromJson(e.getResponseBodyAsString(), type),
                     e.getStatusCode());
             logger.error("e.getResponseBodyAsString() -> " + e.getResponseBodyAsString());
-            loggerService.collateLogMessage(String.format("%s %s", e.getStatusCode(), e.getStatusText()));
+            loggerService.collateLogMessage(String.format("%s %s", e.getStatusCode(), e.getStatusCode().getReasonPhrase()));
             logger.error("HttpClientErrorException -> " + responseEntity.getBody());
             logger.error(LOG_PREFIX + e);
         } catch (HttpServerErrorException e) {
-            loggerService.collateLogMessage(String.format("%s %s", e.getStatusCode(), e.getStatusText()));
+            loggerService.collateLogMessage(String.format("%s %s", e.getStatusCode(), e.getStatusCode().getReasonPhrase()));
             logger.error(LOG_PREFIX + e);
             throw e;
         }
