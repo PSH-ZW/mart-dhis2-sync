@@ -1,5 +1,6 @@
 package com.thoughtworks.martdhis2sync.writer;
 
+import com.thoughtworks.martdhis2sync.dao.PatientDAO;
 import com.thoughtworks.martdhis2sync.model.DHISSyncResponse;
 import com.thoughtworks.martdhis2sync.model.ImportSummary;
 import com.thoughtworks.martdhis2sync.repository.SyncRepository;
@@ -20,10 +21,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.Map.Entry;
@@ -48,7 +45,7 @@ public class TrackedEntityInstanceWriter implements ItemWriter {
     private String user;
 
     @Autowired
-    private DataSource dataSource;
+    private PatientDAO patientDAO;
 
     @Autowired
     private SyncRepository syncRepository;
@@ -156,25 +153,16 @@ public class TrackedEntityInstanceWriter implements ItemWriter {
         return IMPORT_SUMMARY_RESPONSE_SUCCESS.equals(importSummary.getStatus()) && importSummary.getImportCount().getImported() == 1;
     }
 
-    private void updateTracker() throws SQLException {
-
-        String sqlQuery = "INSERT INTO public.instance_tracker(patient_id, instance_id, created_by, date_created) values (? , ?, ?, ?)";
-
+    private void updateTracker() {
         if (!newTEIUIDs.isEmpty()) {
-            int updateCount;
-            try (Connection connection = dataSource.getConnection()) {
-                try (PreparedStatement ps = connection.prepareStatement(sqlQuery)) {
-                    updateCount = 0;
-                    for (Entry entry : newTEIUIDs.entrySet()) {
-                        ps.setString(1, entry.getKey().toString());
-                        ps.setString(2, entry.getValue().toString());
-                        ps.setString(3, user);
-                        ps.setTimestamp(4, Timestamp.valueOf(BatchUtil.GetUTCDateTimeAsString()));
-                        updateCount += ps.executeUpdate();
-                    }
-                }
+            int updateCount = 0;
+            for (Entry<String, String> entry : newTEIUIDs.entrySet()) {
+                String patientId =  entry.getKey();
+                String instanceId = entry.getValue();
+                Timestamp dateCreated = Timestamp.valueOf(BatchUtil.GetUTCDateTimeAsString());
+                updateCount += patientDAO.insertIntoInstanceTracker(patientId, instanceId, user, dateCreated);
             }
-            logger.info(LOG_PREFIX + "Successfully inserted " + updateCount + " TrackedEntityInstance UIDs.");
+            logger.info("{} Successfully inserted {}  TrackedEntityInstance UIDs.", LOG_PREFIX, updateCount);
         }
     }
 
