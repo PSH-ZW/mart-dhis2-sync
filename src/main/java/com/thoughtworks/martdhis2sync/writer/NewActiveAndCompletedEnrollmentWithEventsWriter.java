@@ -99,7 +99,7 @@ public class NewActiveAndCompletedEnrollmentWithEventsWriter implements ItemWrit
             if (groupedEnrollments.containsKey(row.getProgramUniqueId())) {
                 EnrollmentAPIPayLoad enrollmentAPIPayLoad = groupedEnrollments.get(row.getProgramUniqueId());
                 List<Event> events = row.getPayLoad().getEvents();
-                if (events.size() > 0) {
+                if (!events.isEmpty()) {
                     enrollmentAPIPayLoad.getEvents().add(events.get(0));
                 }
             } else {

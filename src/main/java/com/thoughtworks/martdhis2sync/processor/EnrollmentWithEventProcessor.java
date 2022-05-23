@@ -13,9 +13,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static com.thoughtworks.martdhis2sync.util.BatchUtil.DATEFORMAT_WITH_24HR_TIME;
-import static com.thoughtworks.martdhis2sync.util.BatchUtil.hasValue;
-import static com.thoughtworks.martdhis2sync.util.EnrollmentUtil.updateLatestEnrollmentDateCreated;
-import static com.thoughtworks.martdhis2sync.util.EventUtil.updateLatestEventDateCreated;
 
 @Component
 public abstract class EnrollmentWithEventProcessor {
@@ -28,11 +25,6 @@ public abstract class EnrollmentWithEventProcessor {
         JsonObject tableRowJsonObject = tableRowJsonElement.getAsJsonObject();
         JsonObject mappingJsonObject = mappingObjJsonElement.getAsJsonObject();
 
-        JsonElement eventDateCreated = tableRowJsonObject.get("date_created");
-        JsonElement enrollmentDateCreated = tableRowJsonObject.get("enrollment_date_created");
-        updateLatestEventDateCreated(hasValue(eventDateCreated) ? eventDateCreated.getAsString() : "");
-        updateLatestEnrollmentDateCreated(hasValue(enrollmentDateCreated) ? enrollmentDateCreated.getAsString() : "");
-
         Event event = getEvent(tableRowJsonObject, mappingJsonObject);
         List<Event> events = new LinkedList<>();
         if (event != null) {
@@ -40,8 +32,8 @@ public abstract class EnrollmentWithEventProcessor {
         }
         EnrollmentAPIPayLoad enrollmentAPIPayLoad = getEnrollmentAPIPayLoad(tableRowJsonObject, events);
 
-        return new ProcessedTableRow( //TODO: update this.
-                "TestId",
+        return new ProcessedTableRow(
+                "TestId", //TODO: This may not be required. Verify and remove this field.
                 tableRowJsonObject.get("encounter_id").getAsInt(),
                 enrollmentAPIPayLoad
         );

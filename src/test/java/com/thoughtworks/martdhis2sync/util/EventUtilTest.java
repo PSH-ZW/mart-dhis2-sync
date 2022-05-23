@@ -33,7 +33,7 @@ public class EventUtilTest {
     }
 
     @Test
-    public void shouldAddTheGivenObjectToExistingEventTracker() throws NoSuchFieldException, IllegalAccessException {
+    public void shouldAddTheGivenObjectToExistingEventTracker() {
         JsonObject tableRow = getTableRow("8hUkh8G");
         when(BatchUtil.hasValue(tableRow.get("event_id"))).thenReturn(true);
         when(BatchUtil.getUnquotedString(tableRow.get("event_id").toString())).thenReturn("8hUkh8G");
@@ -47,7 +47,7 @@ public class EventUtilTest {
     }
 
     @Test
-    public void shouldAddTheGivenObjectToNewEventTracker() throws NoSuchFieldException, IllegalAccessException {
+    public void shouldAddTheGivenObjectToNewEventTracker() {
         JsonObject tableRow = getTableRow("");
         when(BatchUtil.hasValue(tableRow.get("event_id"))).thenReturn(false);
 //        setValueForStaticField(EventUtil.class, "newEventTrackers", new ArrayList<>());
@@ -60,7 +60,7 @@ public class EventUtilTest {
     }
 
     @Test
-    public void shouldReturnCollatedList() throws NoSuchFieldException, IllegalAccessException {
+    public void shouldReturnCollatedList() {
         EventTracker existingTracker = mock(EventTracker.class);
         EventTracker newTracker = mock(EventTracker.class);
         List<EventTracker> existingList = Collections.singletonList(existingTracker);
@@ -163,7 +163,6 @@ public class EventUtilTest {
 
         Date dateMock = mock(Date.class);
         when(BatchUtil.getDateFromString(givenDate, DATEFORMAT_WITH_24HR_TIME)).thenReturn(dateMock);
-        EventUtil.updateLatestEventDateCreated(givenDate);
 
         assertEquals(dateMock, EventUtil.date);
     }

@@ -48,13 +48,6 @@ public class EventUtil {
         ).collect(Collectors.toList());
     }
 
-    public static void updateLatestEventDateCreated(String dateCreated) {
-        Date bahmniDateCreated = getDateFromString(dateCreated, DATEFORMAT_WITH_24HR_TIME);
-        if (date.compareTo(bahmniDateCreated) < 1) {
-            date = bahmniDateCreated;
-        }
-    }
-
 
     public static Map<String, String> getDataValues(JsonObject tableRow, JsonObject mapping) {
         Set<String> keys = tableRow.keySet();

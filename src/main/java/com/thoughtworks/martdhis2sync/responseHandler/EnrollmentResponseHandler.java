@@ -14,7 +14,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import static com.thoughtworks.martdhis2sync.model.ImportSummary.IMPORT_SUMMARY_RESPONSE_ERROR;
-import static com.thoughtworks.martdhis2sync.util.EnrollmentUtil.enrollmentsToSaveInTracker;
 
 @Component
 public class EnrollmentResponseHandler {
@@ -29,8 +28,6 @@ public class EnrollmentResponseHandler {
         importSummaries.forEach(importSummary -> {
             EnrollmentAPIPayLoad enrollment = payLoadIterator.next();
             enrollment.setEnrollmentId(importSummary.getReference());
-            enrollmentsToSaveInTracker.add(enrollment);
-            //TDDO: check if the above is needed
             trackersHandler.addEnrollmentForPatient(enrollment);
         });
     }
