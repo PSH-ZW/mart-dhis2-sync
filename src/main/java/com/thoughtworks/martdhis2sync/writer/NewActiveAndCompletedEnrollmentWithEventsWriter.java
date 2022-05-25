@@ -111,7 +111,7 @@ public class NewActiveAndCompletedEnrollmentWithEventsWriter implements ItemWrit
     }
 
     private String getAPIBody(Map<String, EnrollmentAPIPayLoad> groupedEnrollmentPayLoad) {
-        StringBuilder body = new StringBuilder("");
+        StringBuilder body = new StringBuilder();
 
         groupedEnrollmentPayLoad.forEach((key, value) -> {
             List<Event> events = value.getEvents();
@@ -175,28 +175,7 @@ public class NewActiveAndCompletedEnrollmentWithEventsWriter implements ItemWrit
         if (null == enrollmentDetails || enrollmentDetails.isEmpty()) {
             return "";
         }
-        String activeEnrollmentId = getActiveEnrollmentId(enrollmentDetails);
-
-        if (YES.equals(openLatestCompletedEnrollment)) {
-            return StringUtils.isEmpty(activeEnrollmentId)
-                    ? getLatestCompletedEnrollmentId(enrollmentDetails)
-                    : activeEnrollmentId;
-        }
-
-        return activeEnrollmentId;
-    }
-
-    private String getLatestCompletedEnrollmentId(List<EnrollmentDetails> enrollmentDetails) {
-        String latestCompletedEnrollmentId = "";
-        String maxCompletedDate = "";
-        for (EnrollmentDetails enrollment : enrollmentDetails) {
-            String completedDate = enrollment.getCompletedDate();
-            if (maxCompletedDate.compareTo(completedDate) < 1) {
-                latestCompletedEnrollmentId = enrollment.getEnrollment();
-                maxCompletedDate = completedDate;
-            }
-        }
-        return latestCompletedEnrollmentId;
+        return getActiveEnrollmentId(enrollmentDetails);
     }
 
     private String getActiveEnrollmentId(List<EnrollmentDetails> enrollmentDetails) {
