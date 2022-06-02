@@ -1,7 +1,8 @@
 package com.thoughtworks.martdhis2sync.service;
 
+import com.thoughtworks.martdhis2sync.dao.OrgUnitDAO;
 import com.thoughtworks.martdhis2sync.dao.PatientDAO;
-import com.thoughtworks.martdhis2sync.model.EnrollmentDetails;
+import com.thoughtworks.martdhis2sync.exception.PsiException;
 import com.thoughtworks.martdhis2sync.model.Mapping;
 import com.thoughtworks.martdhis2sync.model.MappingJson;
 import com.thoughtworks.martdhis2sync.model.TrackedEntityInstanceInfo;
@@ -29,19 +30,24 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Component
 public class TEIService {
 
     @Value("${country.org.unit.id.for.patient.data.duplication.check}")
-    private String orgUnitID;
+    private String parentOrgUnitId;
+
+    @Value("${country.org.unit.for.orgunit.sync}")
+    private String currentOrgUnitId;
 
     @Value("${dhis2.program-id}")
     private String programId;
 
     @Autowired
     private MappingService mappingService;
+
+    @Autowired
+    private LoggerService loggerService;
 
     private static final String TEI_URI = "/api/trackedEntityInstances?pageSize=10000";
 
@@ -50,6 +56,9 @@ public class TEIService {
 
     @Autowired
     private JobService jobService;
+
+    @Autowired
+    private OrgUnitDAO orgUnitDAO;
 
     @Autowired
     private PatientDAO patientDAO;
@@ -92,7 +101,7 @@ public class TEIService {
 
         url.append(TEI_URI);
         url.append("&ou=");
-        url.append(orgUnitID);
+        url.append(parentOrgUnitId);
         url.append("&ouMode=DESCENDANTS");
         url.append("&program=");
         url.append(programId);
@@ -104,32 +113,24 @@ public class TEIService {
         uri.append(":IN:");
 
         List<String> uicForPatient = patientDAO.getUicForPatient(patientId);
-        if(!CollectionUtils.isEmpty(uicForPatient)) {
-            uicForPatient.forEach(uic -> {
-                uri.append(uic);
-                uri.append(";");
-            });
-        }
+        String patientUic = !CollectionUtils.isEmpty(uicForPatient) ? uicForPatient.get(0) : "";
+        uri.append(patientUic);
+        uri.append(";");
         uri.append("&includeAllAttributes=true");
+
         List<TrackedEntityInstanceInfo> allTEIInfos = syncRepository.getTrackedEntityInstances(url.toString() + uri).getBody().getTrackedEntityInstances();
+        for(TrackedEntityInstanceInfo teiInfo : allTEIInfos){
+            if(!teiInfo.getOrgUnit().equals(currentOrgUnitId)) {
+                String orgUnitWithDuplicatePatient = orgUnitDAO.getOrgUnitNameByID(teiInfo.getOrgUnit());
+                String errorMessage = String.format("Patient with UIC %s already exists under %s. Check and update UIC for patient in DHIS.",
+                        patientUic, orgUnitWithDuplicatePatient);
+                loggerService.collateLogMessage(errorMessage);
+                throw new PsiException(errorMessage);
+            }
+        }
         TEIUtil.setTrackedEntityInstanceInfos(allTEIInfos);
 
-        logger.info("TEIUtil.getTrackedEntityInstanceInfos().size(): " + TEIUtil.getTrackedEntityInstanceInfos().size());
-    }
-
-    private Map<String, List<EnrollmentDetails>> getInstanceIdToEnrollmentMap(List<TrackedEntityInstanceInfo> trackedEntityInstances, String currentProgram) {
-        Map<String, List<EnrollmentDetails>> instancesMap = new HashMap<>();
-        trackedEntityInstances.forEach(trackedEntityInstance -> {
-            if (!trackedEntityInstance.getEnrollments().isEmpty()) {
-                instancesMap.put(trackedEntityInstance.getTrackedEntityInstance(), filterProgramsBy(currentProgram, trackedEntityInstance.getEnrollments()));
-            }
-        });
-
-        return instancesMap;
-    }
-
-    private List<EnrollmentDetails> filterProgramsBy(String program, List<EnrollmentDetails> allEnrollments) {
-        return allEnrollments.stream().filter(enrollment -> program.equals(enrollment.getProgram())).collect(Collectors.toList());
+        logger.info("TEIUtil.getTrackedEntityInstanceInfos().size(): {}", TEIUtil.getTrackedEntityInstanceInfos().size());
     }
 
     public Map<String, String> verifyOrgUnitsForPatients() {
