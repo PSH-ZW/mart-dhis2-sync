@@ -40,6 +40,9 @@ public class TEIService {
     @Value("${country.org.unit.for.orgunit.sync}")
     private String currentOrgUnitId;
 
+    @Value("${dhis.uic-duplication-check}")
+    private Boolean performUicDuplicationCheck;
+
     @Value("${dhis2.program-id}")
     private String programId;
 
@@ -120,7 +123,7 @@ public class TEIService {
 
         List<TrackedEntityInstanceInfo> allTEIInfos = syncRepository.getTrackedEntityInstances(url.toString() + uri).getBody().getTrackedEntityInstances();
         for(TrackedEntityInstanceInfo teiInfo : allTEIInfos){
-            if(!teiInfo.getOrgUnit().equals(currentOrgUnitId)) {
+            if(performUicDuplicationCheck && !teiInfo.getOrgUnit().equals(currentOrgUnitId)) {
                 String orgUnitWithDuplicatePatient = orgUnitDAO.getOrgUnitNameByID(teiInfo.getOrgUnit());
                 String errorMessage = String.format("Patient with UIC %s already exists under %s. Check and update UIC for patient in DHIS.",
                         patientUic, orgUnitWithDuplicatePatient);
