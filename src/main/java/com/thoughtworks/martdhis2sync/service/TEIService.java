@@ -26,10 +26,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.io.SyncFailedException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class TEIService {
@@ -148,6 +145,16 @@ public class TEIService {
             invalidPatients.put(patientID, orgUnit);
         });
         return invalidPatients;
+    }
+
+    public int setDefaultOrgUnitForPatientsWithInvalidOrgUnit(Set<String> patientIdentifiers) {
+        final StringBuilder sql = new StringBuilder("update patient set org_unit = ? where patient_identifier in (");
+        for(String identifier : patientIdentifiers) {
+            sql.append("'").append(identifier).append("',");
+        }
+        sql.deleteCharAt(sql.lastIndexOf(","));
+        sql.append(")");
+        return jdbcTemplate.update(sql.toString(), currentOrgUnitId);
     }
 
 

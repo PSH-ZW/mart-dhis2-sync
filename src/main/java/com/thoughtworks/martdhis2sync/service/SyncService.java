@@ -8,10 +8,8 @@ import com.thoughtworks.martdhis2sync.model.MappingJson;
 import com.thoughtworks.martdhis2sync.util.TEIUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
 import java.util.List;
@@ -89,13 +87,11 @@ public class SyncService {
     }
 
     private void validatePatientsBeforeSync() {
+        //For some patients, somehow the orgunit is getting set as null while flattening.
+        //This is a workaround for setting the those orgunits.
         Map<String, String> invalidPatients = teiService.verifyOrgUnitsForPatients();
         if (invalidPatients.size() > 0) {
-            loggerService.collateLogMessage("Pre validation for sync service failed." +
-                    " Invalid Org Unit specified for below patients. Update Patient Info in OpenMRS");
-            invalidPatients.forEach((patientID, orgUnit) -> loggerService.collateLogMessage("[Patient ID (" + patientID + ") Org Unit ID (" + orgUnit + ")] "));
-            throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Prevalidation for sync service failed." +
-                    " Invalid Org Unit specified for below patients. Update Patient Info in OpenMRS, run Bahmni MART");
+            teiService.setDefaultOrgUnitForPatientsWithInvalidOrgUnit(invalidPatients.keySet());
         }
     }
 }
