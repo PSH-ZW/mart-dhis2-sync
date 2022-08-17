@@ -1,31 +1,8 @@
 package com.thoughtworks.martdhis2sync.service;
 
-import com.thoughtworks.martdhis2sync.dao.MappingDAO;
-import com.thoughtworks.martdhis2sync.dao.PatientDAO;
-import com.thoughtworks.martdhis2sync.model.*;
-import com.thoughtworks.martdhis2sync.repository.SyncRepository;
-import com.thoughtworks.martdhis2sync.step.TrackedEntityInstanceStep;
-import com.thoughtworks.martdhis2sync.util.TEIUtil;
-import org.junit.Before;
-import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.springframework.batch.core.Step;
-import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.HttpServerErrorException;
-
-import java.io.IOException;
-import java.io.SyncFailedException;
-import java.util.*;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
-import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockIgnore("javax.management.*")
@@ -439,6 +416,5 @@ public class TEIServiceTest {
 //
 //        return searchableValues;
 //    }
-    
-    @Autowired
+
 }
