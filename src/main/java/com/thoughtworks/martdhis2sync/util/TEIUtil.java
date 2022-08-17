@@ -2,7 +2,7 @@ package com.thoughtworks.martdhis2sync.util;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.thoughtworks.martdhis2sync.model.EnrollmentDetails;
+import com.thoughtworks.martdhis2sync.model.Enrollment;
 import com.thoughtworks.martdhis2sync.model.TrackedEntityInstanceInfo;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,7 +31,7 @@ public class TEIUtil {
 
     @Getter
     @Setter
-    private static Map<String, List<EnrollmentDetails>> instancesWithEnrollments = new HashMap<>();
+    private static Map<String, List<Enrollment>> instancesWithEnrollments = new HashMap<>();
 
     public static Date date = new Date(Long.MIN_VALUE);
 

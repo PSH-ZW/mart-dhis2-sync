@@ -21,7 +21,7 @@ public class TrackedEntityInstanceInfo {
     private boolean deleted;
     private String featureType;
     private List<Object> programOwners;
-    private List<EnrollmentDetails> enrollments;
+    private List<Enrollment> enrollments;
     private List<Object> relationships;
     private List<Attribute> attributes;
 }

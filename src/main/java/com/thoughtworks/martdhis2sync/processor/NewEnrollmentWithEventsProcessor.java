@@ -22,6 +22,8 @@ import static com.thoughtworks.martdhis2sync.util.EventUtil.getDataValues;
 
 @Component
 public class NewEnrollmentWithEventsProcessor extends EnrollmentWithEventProcessor implements ItemProcessor<Object, ProcessedTableRow>{
+    //TODO: there is no need for this class to extend EnrollmentWithEventProcessor.
+    // It is a relic from past when there were multiple EnrollmentProcessors like New, Existing, Completed etc.
 
     @Value("${dhis2.program-id}")
     private String programId;

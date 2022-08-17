@@ -24,6 +24,9 @@ public class SyncService {
     protected TEIService teiService;
 
     @Autowired
+    protected EnrollmentService enrollmentService;
+
+    @Autowired
     protected LoggerService loggerService;
 
     @Autowired
@@ -61,11 +64,15 @@ public class SyncService {
             //TODO: clearing the global maps, we need to handle instance_tracking properly.
             TEIUtil.resetPatientTEIUidMap();
             TEIUtil.resetTrackedEntityInstaceIDs();
-            //TODO: call this only if instanceId is not present in instance_tracker;
-            teiService.getTrackedEntityInstances(event.getPatientId());
-            teiService.triggerJob(event.getPatientId(), event.getUserName(),
+            String patientId = event.getPatientId();
+            teiService.getTrackedEntityInstances(patientId);
+            teiService.triggerJob(patientId, event.getUserName(),
                     config.getSearchable(), config.getComparable());
-
+            //if patient doesn't have enrollment, check if there is an enrollment for the patient in DHIS created from another orgunit.
+            if(!enrollmentService.enrollmentExistsInTracker(patientId)) {
+                //If an enrollment is present in DHIS, insert it into enrollment_tracker.
+                enrollmentService.addEnrollmentToTrackerIfEnrollmentExistsInDhis(patientId);
+            }
             programDataSyncService.syncProgramDetails(event, mappingJson);
             loggerService.updateLog(event.getId(), SUCCESS);
             eventDAO.markEventAsSynced(event.getId());

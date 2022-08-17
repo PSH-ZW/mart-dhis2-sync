@@ -15,6 +15,7 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.Charset;
+import java.util.List;
 
 @Repository
 public class SyncRepository {
@@ -127,7 +128,6 @@ public class SyncRepository {
                     .exchange(dhis2Url + uri, HttpMethod.POST, new HttpEntity<>(body, getHttpHeaders()), type);
 
             logger.info("Response---------->\n" + responseEntity);
-
             logger.info(LOG_PREFIX + "Received " + responseEntity.getStatusCode() + " status code.");
         } catch (HttpClientErrorException e) {
             responseEntity = new ResponseEntity<>(
@@ -143,5 +143,21 @@ public class SyncRepository {
             throw e;
         }
         return responseEntity;
+    }
+
+    public Enrollment getEnrollment(String uri) {
+        ResponseEntity<EnrollmentDetails> responseEntity = null;
+        try {
+            responseEntity = restTemplate.exchange(dhis2Url + uri, HttpMethod.GET, new HttpEntity<>(getHttpHeaders()), EnrollmentDetails.class);
+            if(responseEntity != null) {
+                EnrollmentDetails body = responseEntity.getBody();
+                List<Enrollment> enrollments = body.getEnrollments();
+                return enrollments.get(0);
+            }
+
+        }catch (Exception e){
+            logger.error(LOG_PREFIX + e);
+        }
+        return  null;
     }
 }

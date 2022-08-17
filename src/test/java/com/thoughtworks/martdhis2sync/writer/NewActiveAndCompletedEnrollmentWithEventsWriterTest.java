@@ -60,7 +60,7 @@ public class NewActiveAndCompletedEnrollmentWithEventsWriterTest {
     private EnrollmentAPIPayLoad payLoad3;
     List<ProcessedTableRow> processedTableRows;
     List<EnrollmentAPIPayLoad> enrollmentAPIPayLoads = new LinkedList<>();
-    HashMap<String, List<EnrollmentDetails>> instancesWithEnrollments = new HashMap<>();
+    HashMap<String, List<Enrollment>> instancesWithEnrollments = new HashMap<>();
 
     @Before
     public void setUp() throws Exception {
@@ -315,7 +315,7 @@ public class NewActiveAndCompletedEnrollmentWithEventsWriterTest {
 
         List<ProcessedTableRow> processedTableRows = Collections.singletonList(processedTableRow1);
 
-        EnrollmentDetails enrDetails1 = new EnrollmentDetails("xhjKKwoq", "enrollmentId1", "2018-11-04T00:00:00.000",
+        Enrollment enrDetails1 = new Enrollment("xhjKKwoq", "enrollmentId1","DoA0vsy8Da5", "2018-11-04T00:00:00.000",
                 "2018-12-05T23:07:10.934", EnrollmentAPIPayLoad.STATUS_ACTIVE);
         instancesWithEnrollments.put(instanceId, Collections.singletonList(enrDetails1));
 
@@ -359,7 +359,7 @@ public class NewActiveAndCompletedEnrollmentWithEventsWriterTest {
 
         List<ProcessedTableRow> processedTableRows = Collections.singletonList(processedTableRow1);
 
-        EnrollmentDetails enrDetails1 = new EnrollmentDetails("xhjKKwoq", "enrollmentId1", "2018-11-04T00:00:00.000",
+        Enrollment enrDetails1 = new Enrollment("xhjKKwoq", "enrollmentId1", "DoA0vsy8Da5","2018-11-04T00:00:00.000",
                 "2018-12-05T23:07:10.934", EnrollmentAPIPayLoad.STATUS_COMPLETED);
         instancesWithEnrollments.put(instanceId, Collections.singletonList(enrDetails1));
 
@@ -405,9 +405,9 @@ public class NewActiveAndCompletedEnrollmentWithEventsWriterTest {
 
         List<ProcessedTableRow> processedTableRows = Collections.singletonList(processedTableRow1);
 
-        EnrollmentDetails enrDetails1 = new EnrollmentDetails("xhjKKwoq", "enrollmentId1", "2018-11-04T00:00:00.000",
+        Enrollment enrDetails1 = new Enrollment("xhjKKwoq", "enrollmentId1", "DoA0vsy8Da5",  "2018-11-04T00:00:00.000",
                 "2018-12-05T23:07:10.934", EnrollmentAPIPayLoad.STATUS_COMPLETED);
-        EnrollmentDetails enrDetails2 = new EnrollmentDetails("xhjKKwoq", "enrollmentId2", "2018-11-06T00:00:00.000",
+        Enrollment enrDetails2 = new Enrollment("xhjKKwoq", "enrollmentId2", "DoA0vsy8Da5", "2018-11-06T00:00:00.000",
                 "2018-12-07T18:14:41.513", EnrollmentAPIPayLoad.STATUS_COMPLETED);
 
         instancesWithEnrollments.put(instanceId, Arrays.asList(enrDetails1, enrDetails2));
@@ -454,9 +454,9 @@ public class NewActiveAndCompletedEnrollmentWithEventsWriterTest {
 
         List<ProcessedTableRow> processedTableRows = Collections.singletonList(processedTableRow1);
 
-        EnrollmentDetails enrDetails1 = new EnrollmentDetails("xhjKKwoq", "enrollmentId1", "2018-11-04T00:00:00.000",
+        Enrollment enrDetails1 = new Enrollment("xhjKKwoq", "enrollmentId1", "DoA0vsy8Da5", "2018-11-04T00:00:00.000",
                 "2018-12-07T18:14:41.513", EnrollmentAPIPayLoad.STATUS_COMPLETED);
-        EnrollmentDetails enrDetails2 = new EnrollmentDetails("xhjKKwoq", "enrollmentId2", "2018-11-06T00:00:00.000",
+        Enrollment enrDetails2 = new Enrollment("xhjKKwoq", "enrollmentId2", "DoA0vsy8Da5", "2018-11-06T00:00:00.000",
                 "2018-12-05T23:07:10.934", EnrollmentAPIPayLoad.STATUS_COMPLETED);
 
         instancesWithEnrollments.put(instanceId, Arrays.asList(enrDetails1, enrDetails2));
@@ -503,9 +503,9 @@ public class NewActiveAndCompletedEnrollmentWithEventsWriterTest {
 
         List<ProcessedTableRow> processedTableRows = Collections.singletonList(processedTableRow1);
 
-        EnrollmentDetails enrDetails1 = new EnrollmentDetails("xhjKKwoq", "enrollmentId1", "2018-11-04T00:00:00.000",
+        Enrollment enrDetails1 = new Enrollment("xhjKKwoq", "enrollmentId1", "DoA0vsy8Da5", "2018-11-04T00:00:00.000",
                 "2018-12-05T23:07:10.934", EnrollmentAPIPayLoad.STATUS_COMPLETED);
-        EnrollmentDetails enrDetails2 = new EnrollmentDetails("xhjKKwoq", "enrollmentId2", "2018-11-06T00:00:00.000",
+        Enrollment enrDetails2 = new Enrollment("xhjKKwoq", "enrollmentId2", "DoA0vsy8Da5", "2018-11-06T00:00:00.000",
                 null, EnrollmentAPIPayLoad.STATUS_ACTIVE);
 
         instancesWithEnrollments.put(instanceId, Arrays.asList(enrDetails1, enrDetails2));
@@ -710,9 +710,9 @@ public class NewActiveAndCompletedEnrollmentWithEventsWriterTest {
 
         List<ProcessedTableRow> processedTableRows = Collections.singletonList(processedTableRow1);
 
-        EnrollmentDetails enrDetails1 = new EnrollmentDetails("xhjKKwoq", "enrollmentId1", "2018-11-04T00:00:00.000",
+        Enrollment enrDetails1 = new Enrollment("xhjKKwoq", "enrollmentId1","DoA0vsy8Da5", "2018-11-04T00:00:00.000",
                 "2018-12-05T23:07:10.934", EnrollmentAPIPayLoad.STATUS_COMPLETED);
-        EnrollmentDetails enrDetails2 = new EnrollmentDetails("xhjKKwoq", "enrollmentId2", "2018-11-06T00:00:00.000",
+        Enrollment enrDetails2 = new Enrollment("xhjKKwoq", "enrollmentId2", "DoA0vsy8Da5", "2018-11-06T00:00:00.000",
                 "2018-12-07T18:14:41.513", EnrollmentAPIPayLoad.STATUS_COMPLETED);
 
         instancesWithEnrollments.put(instanceId, Arrays.asList(enrDetails1, enrDetails2));

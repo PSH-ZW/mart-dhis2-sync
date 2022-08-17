@@ -170,16 +170,15 @@ public class NewActiveAndCompletedEnrollmentWithEventsWriter implements ItemWrit
         if(!StringUtils.isEmpty(enrollmentId)) {
             return enrollmentId;
         }
-        //TODO: can remove this if we are not stopping enrollments, Currently we have only one program and all are enrolled to it.
-        List<EnrollmentDetails> enrollmentDetails = TEIUtil.getInstancesWithEnrollments().get(enrollment.getInstanceId());
+        List<Enrollment> enrollmentDetails = TEIUtil.getInstancesWithEnrollments().get(enrollment.getInstanceId());
         if (null == enrollmentDetails || enrollmentDetails.isEmpty()) {
             return "";
         }
         return getActiveEnrollmentId(enrollmentDetails);
     }
 
-    private String getActiveEnrollmentId(List<EnrollmentDetails> enrollmentDetails) {
-        Optional<EnrollmentDetails> activeEnrollment = enrollmentDetails.stream()
+    private String getActiveEnrollmentId(List<Enrollment> enrollments) {
+        Optional<Enrollment> activeEnrollment = enrollments.stream()
                 .filter(enrollment -> EnrollmentAPIPayLoad.STATUS_ACTIVE.equals(enrollment.getStatus()))
                 .findFirst();
 

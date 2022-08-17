@@ -31,9 +31,9 @@ public class EnrollmentDAO {
         return "";
     }
 
-    public boolean enrolmentExistsInEnrolmentTracker(String enrolmentId) {
+    public boolean enrolmentExistsInEnrolmentTracker(String instanceId) {
         String sql = "select count(*) from enrolment_tracker where instance_id = ?";
-        int count = jdbcTemplate.queryForObject(sql, Integer.class, enrolmentId);
+        int count = jdbcTemplate.queryForObject(sql, Integer.class, instanceId);
         return count > 0;
     }
 
