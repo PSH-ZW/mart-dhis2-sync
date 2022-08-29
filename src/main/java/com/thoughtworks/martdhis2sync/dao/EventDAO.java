@@ -72,7 +72,7 @@ public class EventDAO {
 
     public void insertIntoEventTracker(EventTracker eventTracker) {
         String sql = "update event_tracker set event_id = ? where encounter_id = ? and program_stage = ?";
-        try{
+        try {
             jdbcTemplate.update(sql, eventTracker.getEventId(), eventTracker.getEncounterId(), eventTracker.getProgramStage());
         } catch (DataAccessException e) {
             //TODO: log using loggerService
@@ -83,13 +83,13 @@ public class EventDAO {
     public String getEventIdFromEventTrackerIfExists(Integer encounterId, String programStageId) {
         String sql = "select event_id from event_tracker where encounter_id = ? and program_stage = ?";
         String eventId = null;
-        try{
+        try {
             eventId = jdbcTemplate.queryForObject(sql, String.class, encounterId, programStageId);
         } catch (DataAccessException e) {
             logger.info(String.format("Could not find existing event_id for encounter %s and programStage : %s. Creating new enrolment.",
                     encounterId, programStageId));
         }
-        return eventId != null? eventId : "";
+        return eventId != null ? eventId : "";
     }
 
     public String getEncounterOrgUnitId(Integer encounterId) {
@@ -103,11 +103,11 @@ public class EventDAO {
         return orgUnitId != null ? orgUnitId : "";
     }
 
-    public int getRetryCountFromEventsToSync(Integer eventsToSyncID){
+    public int getRetryCountFromEventsToSync(Integer eventsToSyncID) {
         String checkSql = "select retry_count from events_to_sync where id = ?";
         List<Integer> count = jdbcTemplate.query(checkSql, JdbcTemplateMapperFactory.newInstance()
                 .newRowMapper(Integer.class), eventsToSyncID);
-        if(CollectionUtils.isEmpty(count) || count.get(0) == null) {
+        if (CollectionUtils.isEmpty(count) || count.get(0) == null) {
             return 0;
         }
         return count.get(0);

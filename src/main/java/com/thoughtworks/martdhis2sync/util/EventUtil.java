@@ -6,6 +6,7 @@ import com.thoughtworks.martdhis2sync.model.Event;
 import com.thoughtworks.martdhis2sync.model.EventTracker;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,6 +58,7 @@ public class EventUtil {
             JsonElement dataElement = mapping.get(key);
             if (hasValue(dataElement)) {
                 String value = tableRow.get(key).getAsString();
+                value = StringEscapeUtils.escapeJson(value);
                 String dataElementInStringFormat = dataElement.getAsString();
                 dataValues.put(
                         dataElementInStringFormat,
